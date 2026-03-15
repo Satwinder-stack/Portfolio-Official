@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        (function() {
+            // 1. Check storage immediately
+            const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
+            const now = new Date();
+            const isDaytime = now.getHours() >= 6 && now.getHours() < 18;
+            const manualTheme = sessionStorage.getItem('selectedTheme');
+            const isManualControl = sessionStorage.getItem('themeManualOverride') === 'true';
+
+            // 2. Kill the splash immediately if already seen
+            if (hasSeenSplash) {
+                document.documentElement.classList.add('splash-hidden');
+            }
+
+            // 3. Set the theme (to prevent the flash you fixed earlier)
+            if (isManualControl) {
+                if (manualTheme === 'light-theme') document.documentElement.classList.add('light-theme');
+            } else if (isDaytime) {
+                document.documentElement.classList.add('light-theme');
+            }
+        })();
+
+        
+        // Run this immediately to prevent flickering
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // 1. Determine which theme to apply
+            // Priority: Saved Preference > System Preference > Default (Dark)
+            const initialTheme = savedTheme || (systemDark ? 'dark' : 'dark'); 
+
+            // 2. Apply it to the document
+            document.documentElement.setAttribute('data-theme', initialTheme);
+            if (initialTheme === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        })();
+    </script>
+
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/loading_screen.css">
+    <link rel="stylesheet" href="../css/splash_screen.css">
+    <link rel="stylesheet" href="../css/about.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/draggable_navigation.css">
+    <link rel="stylesheet" href="../css/footer.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&family=Space+Grotesk:wght@300..700&family=Tektur:wght@400..900&display=swap" rel="stylesheet">
+    
+    <title>About</title>
+</head>
+<body>
+
+<div id="page-transition-loader" class="transition-loader">
+    <div class="loader-content">
+        <p class="loader-text mode-text"></p>
+        <div class="loader-progress-container">
+            <div id="loader-bar" class="loader-progress-bar"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    
+    <div id="splash-screen">
+        <div class="amv-overlay"></div>
+
+        <div class="splash-content">
+            <div class="clock-artifact-wrapper">
+                <div class="magic-seal outer-seal"></div>
+                <div class="magic-seal inner-seal"></div>
+
+                <svg class="historical-clock" viewBox="0 0 100 100">
+                    <defs>
+                        <filter id="bronze-texture">
+                            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+                            <feDiffuseLighting in="noise" lighting-color="#8b5a2b" surfaceScale="2">
+                                <feDistantLight azimuth="45" elevation="35" />
+                            </feDiffuseLighting>
+                        </filter>
+                        <filter id="amv-glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="1.5" result="blur" />
+                            <feMerge>
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <circle cx="50" cy="50" r="48" fill="url(#bronze-texture)" stroke="#3d2b1f" stroke-width="1.5" />
+                    <circle cx="50" cy="50" r="44" fill="#0d0d0d" stroke="#c5a059" stroke-width="0.3" opacity="0.5" />
+
+                    <g class="runes" fill="#c5a059" filter="url(#amv-glow)" font-family="serif" font-weight="900" font-size="6">
+                        <text x="50" y="16" text-anchor="middle">XII</text>
+                        <text x="85" y="52" text-anchor="middle">III</text>
+                        <text x="50" y="88" text-anchor="middle">VI</text>
+                        <text x="15" y="52" text-anchor="middle">IX</text>
+                    </g>
+
+                    <g class="center-gear moving-part" id="gear-element">
+                        <circle cx="50" cy="50" r="8" fill="none" stroke="#c5a059" stroke-width="0.5" stroke-dasharray="2,1" />
+                        <path d="M50 42 L50 58 M42 50 L58 50" stroke="#c5a059" stroke-width="0.2" />
+                    </g>
+
+                    <g class="hands-group" filter="url(#amv-glow)">
+                        <path id="hour-hand" d="M50 50 L50 25 L53 45 L47 45 Z" fill="#fff" style="transform-origin: 50px 50px;" />
+                        <path id="minute-hand" d="M50 50 L50 15 L51.5 40 L48.5 40 Z" fill="#d4af37" style="transform-origin: 50px 50px;" />
+                        <line id="second-hand" x1="50" y1="60" x2="50" y2="8" stroke="#ffd700" stroke-width="0.4" style="transform-origin: 50px 50px;" />
+                    </g>
+
+                    <circle cx="50" cy="50" r="2" fill="#1a1a1a" stroke="#ffd700" stroke-width="0.5" />
+                </svg>
+            </div>
+
+            <div class="historical-title">
+                <span class="line"></span>
+                <h2>CHRONICLE OF 2026</h2>
+                <span class="line"></span>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <header>
+        <div class="brand">
+            <a href="../index.html">
+                <img src="../images/logo dark mode.png" alt="Logo dark mode" class="logo-dark">
+                <img src="../images/logo light mode.png" alt="Logo Light Mode" class="logo-light">
+            </a>
+        </div>
+
+        <button class="menu-toggle" aria-label="Open menu">☰</button>
+
+        <nav id="main-nav">
+            <a href="about.html">ABOUT</a>
+            <a href="projects.html">PROJECTS</a>
+            <a href="blog.html">BLOG</a> 
+            <a href="resume.html">RESUME</a>
+            <a href="contact.html">CONTACT</a>
+            
+            <button id="theme-toggle" class="theme-btn-rect" aria-label="Toggle theme">
+                <span class="mode-text">NIGHT</span>
+            </button>
+        </nav>
+    </header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Desktop/Tablet: vertical sidebar -->
+    <aside class="section-sidebar" id="draggable-sidebar">
+        <div class="sidebar-inner">
+        <div class="drag-handle">☰</div>
+        <a href="#Header" class="sidebar-link active"><span class="dot"></span> Header</a>
+        <a href="#Tools" class="sidebar-link"><span class="dot"></span> Tools</a>
+        <a href="#Achievements" class="sidebar-link"><span class="dot"></span> Achievements</a>
+        <a href="#Badges" class="sidebar-link BC"><span class="dot"></span> Badges & Certificates</a>
+        <button id="theme-toggle" class="theme-btn-rect sidebar-theme-toggle" aria-label="Toggle theme">
+            <span class="mode-text">NIGHT</span>
+        </button>
+        
+        </div>
+    </aside>
+
+    <!-- Mobile: bottom pill bar -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+        <a href="#Header" class="sidebar-link active">Header</a>
+        <a href="#Tools" class="sidebar-link">Tools</a>
+        <a href="#Achievements" class="sidebar-link">Achievements</a>
+    </nav>
+    
+    <div class="hero-container" id="Header">
+        <section class="contain">
+            <div class="profile fx-rise"> 
+                <div class="profile-image-box">
+                    <img src="../images/profile1.png" alt="Satwinder R. Jeerh" class="profilePic">
+                </div>
+                
+                <div class="hero-text hero-type-container">
+                    <h1 class="name">SATWINDER JEERH</h1>
+                    <h2 class="title">Frontend Developer</h2>
+                    <p class="description desc-type-container">
+                        A third-year Information Technology major who specializes in Frontend Development, 
+                        wants to continue on to Frontend Development. I love developing responsive, 
+                        accessible user interfaces with HTML, CSS and JavaScript.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    <div class="skills fx-reveal fx-rise">
+        <section class="accomplished fx-reveal">
+            <h1>15+ PROJECTS MADE</h1>
+            <hr>
+            <h1>COUNTLESS HOURS OF WORK</h1>
+            <hr>
+            <h1>PROFICIENT IN 8 PROGRAMMING LANGUAGES</h1>
+            <hr>
+            <h1>10+ RESPONSIVE WEB SYSTEMS DEVELOPED</h1>
+            <hr>
+            <h1>5 UI SYSTEMS DESIGNED</h1>
+            <hr>
+            <h1>ABLE TO USE ANGULAR, VUE, NODE, REACT</h1>
+
+        </section>
+
+        <div class="skills-wrapper">
+    <!-- LEFT: Dropdown list -->
+        <div class="skills-list">
+            <div class="skill-item">
+                <div class="skill-header skill-type-container">
+                    <h1>HOW I STARTED</h1>
+                    <img src="../images/dropdown white.png" alt="dropdown icon" class="dropdown-icon">
+                </div>
+                <div class="skill-content">
+                    I started as a student with barely any knowledge in my freshman year due to not being on a specialized strand focusing on programming. I started off as clueless like everyone else in programming, especially once it reaches multiple pages. There was even a time that I refused to acknowledge using multiple files due to its complexity. However, I persevered to study everything and participated in coding competitions. Here I am today, being able to handle complex projects.
+                </div>
+            </div>
+
+            <div class="skill-item">
+                <div class="skill-header">
+                    <h1>TECH SKILLS</h1>
+                    <img src="../images/dropdown white.png" alt="dropdown icon" class="dropdown-icon">
+                </div>
+                <div class="skill-content">
+                    I can handle html and css for creating dynamic, user-friendly, and responsive interfaces. I am well-versed with using python and java for data science and creating programs full of logics. I have a significant skill as well with javascript, however, online resources are still needed for it. Furthermore, I'm able to use node.js, react.js, angularJS, vue.js, figma, wordpress. Lastly, I also have significant skill in cybersecurity, networking, SEO, and handling data with utmost security. 
+                </div>
+            </div>
+
+            <div class="skill-item">
+                <div class="skill-header">
+                    <h1>MY GOALS</h1>
+                    <img src="../images/dropdown white.png" alt="dropdown icon" class="dropdown-icon">
+                </div>
+                <div class="skill-content">
+                    Expand my skills by experiencing how programming is used in the industry. Furthermore, I want to contribute to the company that has given me the opportunity to work for them by applying what I have been practicing and learning. Lastly, I want to be able to expand my network with other colleagues that I'll be able to work with.
+                </div>
+            </div>
+
+            <div class="skill-item">
+                <div class="skill-header">
+                    <h1>FUN FACTS</h1>
+                    <img src="../images/dropdown white.png" alt="dropdown icon" class="dropdown-icon">
+                </div>
+                <div class="skill-content">
+                    <p>
+                    I enjoy developing systems, not just the frontend, I like developing systems as side projects. Furthermore, I work well in a team and enjoy leading other members, and all throughout the project time I'll try to get to know them. I also work well independently while listening to music to concentrate. Additionally, I can adapt quickly to systems that I'm required to learn. Lastly, I can visualize how data flows through a system before it's built.
+                    </p>
+                </div>
+            </div>
+
+            <div class="skill-item">
+                <div class="skill-header">
+                    <h1>SPECIALIZATION</h1>
+                    <img src="../images/dropdown white.png" alt="dropdown icon" class="dropdown-icon">
+                </div>
+                <div class="skill-content">
+                    Currently, I'm specializing in Frontend Development, however, I am able to go full-stack with all my skills. I enjoy creating systems, not just the frontend, it also includes the designing, backend, api, database, hosting, configuring servers, 
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT: Active dropdown display -->
+        <div class="skills-display"></div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <br>
+
+    <section class="knowledge fx-reveal fx-rise" id="Tools">
+        <section class="cards fx-reveal">
+            <section class="cards1" >
+                <div class="card card-type-container">
+                    <h1>LANGUAGES</h1>
+                    <section class="sectioning">
+                        <section class="first-side">
+                            <p>HTML</p>
+                            <p>PHP</p>
+                            <p>JAVA</p>
+                            <p>DART</p>
+                            <p>BASH</p>
+                        </section>
+
+                        <section class="second-side">
+                            <p>CSS</p>
+                            <p>JS</p>
+                            <p>PYTHON</p>
+                            <p>SQL</p>
+                        </section>
+                    </section>
+                </div>
+                <div class="card card-type-container">
+                    <h1>TOOLS</h1>
+                    <section class="sectioning">
+                        <section class="first-side">
+                            <p>VSCODE</p>
+                            <p>SUBLIME</p>
+                            <p>GIT BASH</p>
+                            <p>WORDPRESS</p>
+                            <p>NETLIFY</p>
+                        </section>
+                        
+                        <section class="second-side">
+                            <p>PYCHARM</p>
+                            <p>ANDROID STUDIO</p>
+                            <p>GITHUB</p>
+                            <p>FIGMA</p>
+                            <P>INFINITYFREE</P>
+                        </section>
+                    </section>
+                </div>
+                
+            </section>
+
+            <br>
+            <br>
+            <section class="cards2">
+                <div class="card card-type-container">
+                    <h1>OPERATING SYSTEMS</h1>
+                    <section class="sectioning">
+                        <section class="first-side">
+                            <p>WINDOWS</p>
+                            <p>MACOS</p>
+                        </section>
+                        
+                        <section class="second-side">
+                            <p>LINUX UBUNTU</p>
+                            <p>LINUX FEDORA</p>
+                            <p>LINUX ORACLE</p>
+                            <p>LINUX KALI</p>
+                        </section>
+                    </section>
+                </div>
+                <div class="card card-type-container">
+                    <h1>FRAMEWORKS</h1>
+                    <section class="sectioning">
+                        <section class="first-side">
+                            <p>ANGULAR</p>
+                            <p>TAILWIND CSS</p>
+                            <p>LARAVEL</p>
+                        </section>
+                        
+                        <section class="second-side">
+                            <p>NODE.JS</p>
+                            <p>VUE.JS</p>
+                            <p>FLUTTER</p>
+                        </section>
+                    </section>
+                </div>
+
+            </section>
+        </section>
+    </section>
+    <br>
+    <br><br><br>
+
+
+
+
+
+
+    <section class="achievement fx-reveal" id="Achievements">
+        <h1 class="achievement-title">ACHIEVEMENTS</h1>
+
+        <div class="achievements-container">
+            <div class="achievement-list">
+                <div class="achievement-item">
+                    <h3>President's Lister</h3>
+                    <p>2-Time President's Lister</p>
+                    <p>Rank 6 out of 16 players in Code to Death by Loop Organization</p>
+                </div>
+
+                <div class="achievement-item">
+                    <h3>Dean's Lister</h3>
+                    <p>3-Time Dean's Lister</p>
+                    <p>Rank 6 out of 14 players in Debuggathon by Loop Organization</p>
+                </div>
+            </div>
+
+            <div class="certificates-gallery">
+                <div class="gallery-row">
+                    <img src="../images/pl.jpg" alt="President's Lister Certificate 1">
+                    <img src="../images/pl.jpg" alt="President's Lister Certificate 2">
+                </div>
+
+                <div class="gallery-row">
+                    <img src="../images/dl1.jpg" alt="Dean's Lister Certificate 1">
+                    <img src="../images/dl2.jpg" alt="Dean's Lister Certificate 2">
+                </div>
+
+                <div class="gallery-row">
+                    <img src="../images/dl3.jpg" alt="Dean's Lister Certificate 3">
+                    <img src="../images/debuggathon.jpg" alt="Debuggathon Certificate">
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <section class="badges fx-reveal" id="Badges">
+        <h1>BADGES</h1>
+
+        <div class="badges-grid">
+            <div class="badge-card"
+                data-title="CCNA: Introduction to Networks"
+                data-purpose="To master the architecture, structure, and functions of computer networks."
+                data-learned="Configuring switches and routers, IPv4/IPv6 addressing, and ethernet switching."
+                data-date="January 2026"
+                data-link="https://www.credly.com/badges/a89e4717-8c2d-4197-86fd-fcdc4ed74bb4/public_url"
+                data-lang="Networking, Cisco Packet Tracer"
+                data-target="_blank"
+                >
+                <img src="../images/ccna-introduction-to-networks (1).png" alt="CCNA Introduction to Networks">
+            </div>
+
+            <div class="badge-card"
+                data-title="CompTIA IT Fundamentals (ITF+)"
+                data-purpose="Establishing a solid foundation in IT literacy and understanding the role of hardware/software."
+                data-learned="Computing components, software development basics, database use, and security risks."
+                data-date="February 2026"
+                data-link="https://www.credly.com/badges/04db4326-c9ba-47b4-b519-bda6397a5344/public_url"
+                data-lang="Hardware, Software Setup, Troubleshooting"
+                data-target="_blank"
+                >
+                <img src="../images/comptia-it-fundamentals-itf-certification..png" alt="CompTIA IT Fundamentals">
+            </div>
+
+            <div class="badge-card"
+                data-title="CRUD Operations in MongoDB"
+                data-purpose="Learning to manage data within a NoSQL environment using the MongoDB Atlas platform."
+                data-learned="Document creation, advanced querying, update operators, and deletion protocols."
+                data-date="February 2026"
+                data-link="https://www.credly.com/badges/3a21ae57-7d73-45d0-b508-61e9016c8b4e/public_url"
+                data-lang="NoSQL, MongoDB, JSON/BSON"
+                data-target="_blank"
+                >
+                <img src="../images/crud-operations-in-mongodb.png" alt="CRUD Operations in MongoDB">
+            </div>
+
+            <div class="badge-card"
+                data-title="Endpoint Security"
+                data-purpose="Understanding how to protect devices like laptops and smartphones from cyber threats."
+                data-learned="Antimalware technologies, cloud security, and mitigating remote access vulnerabilities."
+                data-date="March 2026"
+                data-link="https://www.credly.com/badges/301b72c4-1446-4e32-b415-7bb8d36c49d3/public_url"
+                data-lang="Cybersecurity, Risk Management"
+                data-target="_blank"
+                >
+                <img src="../images/endpoint-security.png" alt="Endpoint Security">
+            </div>
+
+            <div class="badge-card"
+                data-title="Introduction to Cybersecurity"
+                data-purpose="Exploring the global impact of cybercrime and how to protect personal and organizational data."
+                data-learned="The CIA triad, types of malware, firewall basics, and ethical hacking concepts."
+                data-date="March 2026"
+                data-link="https://www.credly.com/badges/f66a9f1a-0cdb-4929-ad7d-50e3c48d751f/public_url"
+                data-lang="Information Security, Network Defense"
+                data-target="_blank"
+                >
+                <img src="../images/introduction-to-cybersecurity.png" alt="Introduction to Cybersecurity">
+            </div>
+
+            <div class="badge-card"
+                data-title="HTML Essentials"
+                data-purpose="Building the structural backbone of web pages using semantic HTML5."
+                data-learned="Document structure, forms, tables, accessibility tags, and SEO best practices."
+                data-date="January 2026"
+                data-link="https://www.credly.com/badges/0c71f5e9-5809-4cdc-94a0-101a42e6d635/public_url"
+                data-lang="HTML5, Semantic Web"
+                data-target="_blank"
+                >
+                <img src="../images/html-essentials.png" alt="HTML Essentials">
+            </div>
+
+            <div class="badge-card"
+                data-title="CSS Essentials"
+                data-purpose="Styling modern websites with a focus on responsive design and layout systems."
+                data-learned="Flexbox, CSS Grid, Box Model, transitions, and media queries for mobile-first design."
+                data-date="January 2026"
+                data-link="https://www.credly.com/badges/45612735-0201-4b8e-bbd4-709f8c487af5/public_url"
+                data-lang="CSS3, Responsive Design"
+                data-target="_blank"
+                >
+                <img src="../images/css-essentials.png" alt="CSS Essentials">
+            </div>
+
+            <div class="badge-card"
+                data-title="JavaScript Essentials 1"
+                data-purpose="Mastering the core logic of programming using the JavaScript language."
+                data-learned="Variables, data types, control flow, functions, and basic DOM manipulation."
+                data-date="February 2026"
+                data-link="https://www.credly.com/badges/a8debca7-6dae-4605-ab8e-d5aae6ff1ca1/public_url"
+                data-lang="JavaScript (ES6+), Logic"
+                data-target="_blank"
+                >
+                <img src="../images/javascript-essentials-1.png" alt="JavaScript Essentials 1">
+            </div>
+
+            <div class="badge-card"
+                data-title="Python Essentials 1"
+                data-purpose="Introduction to basic computer programming concepts using Python 3."
+                data-learned="Basic data types, loops, lists, logical operations, and function definitions."
+                data-date="December 2025"
+                data-link="https://www.credly.com/badges/c87b1ed2-eaf7-4945-b3a9-472c951a6115/public_url"
+                data-lang="Python 3, Algorithm Basics"
+                data-target="_blank"
+                >
+                <img src="../images/python-essentials-1.1.png" alt="Python Essentials 1">
+            </div>
+
+            <div class="badge-card"
+                data-title="Python Essentials 2"
+                data-purpose="Advanced Python programming with an emphasis on object-oriented programming (OOP)."
+                data-learned="Modules, packages, exceptions, strings, list processing, and OOP principles."
+                data-date="January 2026"
+                data-link="https://www.credly.com/badges/f4ba9aac-8b59-4f51-b792-ea7a08afbf5f/public_url"
+                data-lang="Python 3, OOP, Exception Handling"
+                data-target="_blank"
+                >
+                <img src="../images/python-essentials-2.png" alt="Python Essentials 2">
+            </div>
+        </div>
+    </section>
+
+    <div id="badgeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-body">
+                <div class="modal-left">
+                    <img id="modalImg" src="" alt="Badge Detail">
+                </div>
+                <div class="modal-right">
+                    <h2 id="modalTitle"></h2>
+                    <hr>
+                    <p><strong>Purpose:</strong> <span id="modalPurpose"></span></p>
+                    <p><strong>What I Learned:</strong> <span id="modalLearned"></span></p>
+                    <p><strong>Date Accomplished:</strong> <span id="modalDate"></span></p>
+                    <p><strong>Languages/Skills:</strong> <span id="modalLang"></span></p>
+                    <a id="modalLink" href="#" target="_blank" class="modal-link-btn">View Certificate</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="slider-container" id="Certificates">
+        <h1 class="slider-title">CERTIFICATIONS</h1>
+
+        <div class="slider">
+            <div class="slider-wrapper">
+                <img src="../images/comptia-it-fundamentals-itf-certification..png" 
+                    alt="CompTIA IT Fundamentals Certification" 
+                    class="slide"
+                    data-url="https://cp.certmetrics.com/CompTIA/en/public/verify/credential/VK3153KZFJV1QCCT"
+                    data-target="_blank"
+                    >
+
+                <img src="../images/google ux.png" 
+                    alt="Google UI/UX Design Certificate" 
+                    class="slide"
+                    data-url="https://www.coursera.org/account/accomplishments/specialization/KMN2IVMNFI7U"
+                    data-target="_blank"
+                    >
+
+                <img src="../images/legacy cert.png" 
+                    alt="Legacy Responsive Web Design Certification" 
+                    class="slide"
+                    data-url="https://www.freecodecamp.org/certification/satwinderjeerh/responsive-web-design"
+                    data-target="_blank"
+                    >
+
+                <img src="../images/relational database cert.png" 
+                    alt="Relational Database Certification" 
+                    class="slide"
+                    data-url="https://www.freecodecamp.org/certification/satwinderjeerh/relational-database-v8"
+                    data-target="_blank"
+                    >
+
+                <img src="../images/legacy javascript cert.png" 
+                    alt="Legacy JavaScript Algorithms and Data Structures Certification" 
+                    class="slide"
+                    data-url="https://www.freecodecamp.org/certification/satwinderjeerh/javascript-algorithms-and-data-structures"
+                    data-target="_blank"
+                    >
+
+                <img src="../images/backend development cert.png" 
+                    alt="Backend Development and APIs Certification" 
+                    class="slide"
+                    data-url="https://www.freecodecamp.org/certification/satwinderjeerh/back-end-development-and-apis"
+                    data-target="_blank"
+                    >
+            </div>
+        </div>
+
+        <!-- Navigation buttons -->
+         <button class="slider-button prev" aria-label="Previous certificate" onclick="prevCert()">
+            <span>&#10094;</span>
+        </button>
+
+        <button class="slider-button next" aria-label="Next certificate" onclick="nextCert()">
+            <span>&#10095;</span>
+        </button>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<footer>
+    <div class="footer-container">
+        <div class="left">
+        <p class="copyright">© 2025 SATWINDER JEERH</p>
+        <p class="role">Front-End Developer</p>
+
+        <div class="tech-icons">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732212.png" alt="HTML5 logo" loading="lazy"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732190.png" alt="CSS3 logo" loading="lazy"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968292.png" alt="JavaScript logo" loading="lazy"/>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/Satwinder-stack" target="_blank" rel="noopener" aria-label="GitHub">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733553.png" alt="GitHub logo" loading="lazy"/>
+            </a>
+            <a href="https://www.linkedin.com/in/satwinder-jeerh" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn logo" loading="lazy"/>
+            </a>
+            <a href="mailto:srjeerh09@gmail.com" aria-label="Email">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" alt="Email logo" loading="lazy"/>
+            </a>
+        </div>
+        </div>
+
+        <div class="links" aria-label="Footer navigation">
+            <div>
+                <h4>ABOUT</h4>
+                <a href="about.html">Meet the Developer</a>
+                <a href="about.html">Badges</a>
+                <a href="about.html">Certificates</a>
+                <a href="about.html">Achievements</a>
+            </div>
+            <div>
+                <h4>PROJECTS</h4>
+                <a href="projects.html">Project Video</a>
+                <a href="projects.html">Project List</a>
+                <a href="projects.html">Languages</a>
+                <a href="projects.html">Collaborative Projects</a>
+            </div>
+            <div>
+                <h4>BLOGS</h4>
+                <a href="blogs/ai-stagnation.html">AI Stagnation</a>
+                <a href="blogs/ai-tool-or-human.html">AI: Tool or human</a>
+                <a href="blogs/ai-vs-traditional.html">AI vs Traditional</a>
+                <a href="blogs/human-dependency.html">Human Dependency</a>
+            </div>
+            <div>
+                <h4>RESUME</h4>
+                <a href="resume.html">About me</a>
+                <a href="resume.html">How to Contact</a>
+                <a href="resume.html">Education</a>
+                <a href="resume.html">Experience</a>
+            </div>
+            <div>
+                <h4>CONTACT</h4>
+                <a href="contact.html">Phone No.</a>
+                <a href="contact.html">Email</a>
+                <a href="contact.html">Linkedin</a>
+                <a href="contact.html">Testimonials</a>
+            </div>
+
+
+        </div>
+    </div>
+  </footer>
+    
+    <script src="../javascript/navigation.js"></script>
+    <script src="../javascript/loading_screen.js"></script>
+    <script src="../javascript/about.js"></script>
+    <script src="../javascript/draggable_navigation.js"></script>
+</body>
+</html>

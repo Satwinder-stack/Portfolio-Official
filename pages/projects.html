@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+      (function() {
+          // 1. Check storage immediately
+          const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
+          const now = new Date();
+          const isDaytime = now.getHours() >= 6 && now.getHours() < 18;
+          const manualTheme = sessionStorage.getItem('selectedTheme');
+          const isManualControl = sessionStorage.getItem('themeManualOverride') === 'true';
+
+          // 2. Kill the splash immediately if already seen
+          if (hasSeenSplash) {
+              document.documentElement.classList.add('splash-hidden');
+          }
+
+          // 3. Set the theme (to prevent the flash you fixed earlier)
+          if (isManualControl) {
+              if (manualTheme === 'light-theme') document.documentElement.classList.add('light-theme');
+          } else if (isDaytime) {
+              document.documentElement.classList.add('light-theme');
+          }
+      })();
+
+      
+        // Run this immediately to prevent flickering
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // 1. Determine which theme to apply
+            // Priority: Saved Preference > System Preference > Default (Dark)
+            const initialTheme = savedTheme || (systemDark ? 'dark' : 'dark'); 
+
+            // 2. Apply it to the document
+            document.documentElement.setAttribute('data-theme', initialTheme);
+            if (initialTheme === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PROJECTS</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/loading_screen.css">
+  <link rel="stylesheet" href="../css/splash_screen.css">
+  <link rel="stylesheet" href="../css/header.css"/>
+  <link rel="stylesheet" href="../css/projects.css"/>
+  <link rel="stylesheet" href="../css/draggable_navigation.css">
+  <link rel="stylesheet" href="../css/footer.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tektur&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="page-transition-loader" class="transition-loader">
+    <div class="loader-content">
+        <p class="loader-text mode-text"></p>
+        <div class="loader-progress-container">
+            <div id="loader-bar" class="loader-progress-bar"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div id="splash-screen">
+    <div class="amv-overlay"></div>
+
+    <div class="splash-content">
+        <div class="clock-artifact-wrapper">
+            <div class="magic-seal outer-seal"></div>
+            <div class="magic-seal inner-seal"></div>
+
+            <svg class="historical-clock" viewBox="0 0 100 100">
+                <defs>
+                    <filter id="bronze-texture">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+                        <feDiffuseLighting in="noise" lighting-color="#8b5a2b" surfaceScale="2">
+                            <feDistantLight azimuth="45" elevation="35" />
+                        </feDiffuseLighting>
+                    </filter>
+                    <filter id="amv-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="1.5" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <circle cx="50" cy="50" r="48" fill="url(#bronze-texture)" stroke="#3d2b1f" stroke-width="1.5" />
+                <circle cx="50" cy="50" r="44" fill="#0d0d0d" stroke="#c5a059" stroke-width="0.3" opacity="0.5" />
+
+                <g class="runes" fill="#c5a059" filter="url(#amv-glow)" font-family="serif" font-weight="900" font-size="6">
+                    <text x="50" y="16" text-anchor="middle">XII</text>
+                    <text x="85" y="52" text-anchor="middle">III</text>
+                    <text x="50" y="88" text-anchor="middle">VI</text>
+                    <text x="15" y="52" text-anchor="middle">IX</text>
+                </g>
+
+                <g class="center-gear moving-part" id="gear-element">
+                    <circle cx="50" cy="50" r="8" fill="none" stroke="#c5a059" stroke-width="0.5" stroke-dasharray="2,1" />
+                    <path d="M50 42 L50 58 M42 50 L58 50" stroke="#c5a059" stroke-width="0.2" />
+                </g>
+
+                <g class="hands-group" filter="url(#amv-glow)">
+                    <path id="hour-hand" d="M50 50 L50 25 L53 45 L47 45 Z" fill="#fff" style="transform-origin: 50px 50px;" />
+                    <path id="minute-hand" d="M50 50 L50 15 L51.5 40 L48.5 40 Z" fill="#d4af37" style="transform-origin: 50px 50px;" />
+                    <line id="second-hand" x1="50" y1="60" x2="50" y2="8" stroke="#ffd700" stroke-width="0.4" style="transform-origin: 50px 50px;" />
+                </g>
+
+                <circle cx="50" cy="50" r="2" fill="#1a1a1a" stroke="#ffd700" stroke-width="0.5" />
+            </svg>
+        </div>
+
+        <div class="historical-title">
+            <span class="line"></span>
+            <h2>CHRONICLE OF 2026</h2>
+            <span class="line"></span>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header>
+  <div class="brand">
+    <a href="../index.html">
+      <img src="../images/logo dark mode.png" alt="Logo dark mode" class="logo-dark">
+      <img src="../images/logo light mode.png" alt="Logo Light Mode" class="logo-light">
+    </a>
+  </div>
+
+  <button class="menu-toggle" aria-label="Open menu">☰</button>
+
+  <nav id="main-nav">
+    <a href="about.html">ABOUT</a>
+    <a href="projects.html">PROJECTS</a>
+    <a href="blog.html">BLOG</a> 
+    <a href="resume.html">RESUME</a>
+    <a href="contact.html">CONTACT</a>
+    
+    <button id="theme-toggle" class="theme-btn-rect" aria-label="Toggle theme">
+        <span class="mode-text">NIGHT</span>
+    </button>
+  </nav>
+</header>
+
+<main>
+
+
+
+
+
+
+  <!-- Desktop/Tablet: vertical sidebar -->
+  <aside class="section-sidebar" id="draggable-sidebar">
+    <div class="sidebar-inner">
+      <div class="drag-handle">☰</div>
+      <a href="#Featured" class="sidebar-link active"><span class="dot"></span> Featured</a>
+      <a href="#Projects" class="sidebar-link"><span class="dot"></span> Projects</a>
+      <a href="#Collaborations" class="sidebar-link"><span class="dot"></span> Collaborations</a>
+      <button id="theme-toggle" class="theme-btn-rect sidebar-theme-toggle" aria-label="Toggle theme">
+          <span class="mode-text">NIGHT</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile: bottom pill bar -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+    <a href="#Featured" class="sidebar-link active">Featured</a>
+    <a href="#Projects" class="sidebar-link">Projects</a>
+    <a href="#Collaborations" class="sidebar-link">Collabs</a>
+  </nav>
+
+
+
+
+
+  <section class="projects-section" id="Featured">
+    <h1>FEATURED PROJECTS</h1>
+
+    <div class="main-preview">
+      <a href="projects/project-parking-system.html" class="video-link">
+        <video id="preview-1" class="preview-media active" src="../videos/smart parking system - COMPRESS.mp4" muted loop playsinline></video>
+      </a>
+      <a href="projects/project-huancafe.html" class="video-link">
+        <video id="preview-2" class="preview-media" src="../videos/huancafe - COMPRESS.mp4" muted loop playsinline></video>
+      </a>
+      <a href="projects/project-clinic-inventory.html" class="video-link">
+        <video id="preview-3" class="preview-media" src="../videos/clinic inventory - COMPRESS.mp4" muted loop playsinline></video>
+      </a>
+      <a href="projects/project-standspeakact.html" class="video-link">
+        <video id="preview-4" class="preview-media" src="../videos/standspeakact - COMPRESS.mp4" muted loop playsinline></video>
+      </a>
+      <a href="projects/project-coffee-cat.html" class="video-link">
+        <video id="preview-5" class="preview-media" src="../videos/coffee cat - COMPRESS.mp4" muted loop playsinline></video>
+      </a>
+    </div>
+
+    <div class="layout">
+      <div class="carousel-container">
+        <div class="thumbnail tfirst" data-index="0">
+          <img src="../images/parking system.jpg" alt="Smart Parking System thumbnail">
+        </div>
+        <div class="thumbnail" data-index="1">
+          <img src="../images/huancoffee.png" alt="Huan Cafe thumbnail">
+        </div>
+        <div class="thumbnail" data-index="2">
+          <img src="../images/clinic inventory system.jpg" alt="Clinic Inventory System thumbnail">
+        </div>
+        <div class="thumbnail" data-index="3">
+          <img src="../images/standspeakact.jpg" alt="Stand Speak Act thumbnail">
+        </div>
+        <div class="thumbnail" data-index="4">
+          <img src="../images/coffeecat.jpg" alt="Coffee Cat thumbnail">
+        </div>
+      </div>
+
+      <div class="details-wrapper">
+        <div class="project-details active" id="project-1">
+          <a class="titleLink" href="projects/project-parking-system.html"><h2>SMART PARKING SYSTEM</h2></a>
+          <div class="date">05/27/2025 - 06/07/2025</div>
+          <div class="tech-stack tech-stack2">
+            <span class="tech-icon"><i class="fab fa-html5"></i> HTML5</span>
+            <span class="tech-icon"><i class="fab fa-css3-alt"></i> CSS3</span>
+            <span class="tech-icon"><i class="fab fa-js"></i> JavaScript</span>
+            <span class="tech-icon"><i class="fas fa-database"></i> MySQL</span>
+            <span class="tech-icon"><i class="fab fa-php"></i> PHP</span>
+          </div>
+          <div class="descriptionProjects">
+            This is a fully functional web-based system where users can avail & reserve spots in a parking area at specific time they want freely. It updates real-time and allows customer to know specific spots in advance. It also allows the customer to reserve a whole spot for up to a whole day. There are also rules in-between availing or reserving a spot whether it would be reserving a spot 10 minutes after a customer just used it - which is not allowed. Or simply if a customer doesn't remove their car from that parking spot after their time is up, the physical staff will be handling the matter. Future implementations will still be added to satisfy each and every consumer needs.  <a class="projectLink" href="projects/project-parking-system.html">View More</a>
+          </div>
+          <div class="action-row">
+            <a href="https://smart-parking-system.42web.io/login.php" class="left left2" target="_blank">« Working Sample</a>
+            <a href="https://github.com/Satwinder-stack/Smart-Parking-System.git" class="right" target="_blank">Source Code »</a>
+          </div>
+        </div>
+
+        <div class="project-details active" id="project-2">
+          <a class="titleLink" href="projects/project-huancafe.html"><h2>HUAN CAFE</h2></a>
+          <div class="date">12/15/2025 - 02/19/2026</div>
+          <div class="tech-stack tech-stack2">
+            <span class="tech-icon"><i class="fab fa-html5"></i> HTML5</span>
+            <span class="tech-icon"><i class="fab fa-css3-alt"></i> CSS3</span>
+            <span class="tech-icon"><i class="fab fa-css3-alt"></i> WORDPRESS</span>
+
+          </div>
+          <div class="descriptionProjects">
+            This is an online shop designed to promote a specific café located in Angeles City, Pampanga. The primary purpose of the website is to expand the café's reach and strengthen its brand presence by establishing a strong online platform. Through this website, customers can conveniently explore the café's menu, learn about its story and offerings, and stay updated on promotions, events, and special deals. By creating an accessible and engaging digital presence, the online shop helps attract new customers while maintaining connections with existing ones. <a class="projectLink" href="projects/project-huancafe.html">View More</a>
+          </div>
+
+          <div class="action-row">
+            <a href="https://huancoffee.shop/" class="left left2" target="_blank">« Working Sample</a>
+            <a href="https://lightseagreen-wallaby-826725.hostingersite.com/wp-admin/post.php?post=802&action=edit" class="right right2" target="_blank">Source Code »</a>
+          </div>
+        </div>
+
+        <div class="project-details active" id="project-3">
+          <a class="titleLink" href="projects/project-clinic-inventory.html"><h2>CLINIC INVENTORY SYSTEM</h2></a>
+          <div class="date">05/05/2025 - 05/15/2025</div>
+          <div class="tech-stack tech-stack2">
+            <span class="tech-icon"><i class="fab fa-html5"></i> HTML5</span>
+            <span class="tech-icon"><i class="fab fa-css3-alt"></i> CSS3</span>
+            <span class="tech-icon"><i class="fab fa-js"></i> JavaScript</span>
+            <span class="tech-icon"><i class="fas fa-database"></i> MySQL</span>
+            <span class="tech-icon"><i class="fab fa-php"></i> PHP</span>
+          </div>
+          <div class="descriptionProjects">
+            This program is an inventory management system that allows users or employees to efficiently add, delete, and update data in real time. It automatically arranges, organizes, and filters inventory information to ensure accuracy and easy access. The system also supports data conversion and export into Excel format, enabling users to generate reports, track stock levels, and manage inventory records in a structured and convenient way. <a class="projectLink" href="projects/project-clinic-inventory.html">View More</a>
+          </div>
+          <div class="action-row">
+            <a href="https://clinic-inventory-system.42web.io/index.php" class="left" target="_blank">« Working Sample</a>
+            <a href="https://github.com/Satwinder-stack/clinic-inventory-system.git" class="right right2" target="_blank">Source Code »</a>
+          </div>
+        </div>
+
+        <div class="project-details active" id="project-4">
+          <a class="titleLink" href="projects/project-standspeakact.html"><h2>STAND SPEAK ACT</h2></a>
+          <div class="date">09/03/2025 - 10/12/2025</div>
+          <div class="tech-stack tech-stack2">
+            <span class="tech-icon"><i class="fab fa-html5"></i> HTML5</span>
+            <span class="tech-icon"><i class="fab fa-css3-alt"></i> CSS3</span>
+            <span class="tech-icon"><i class="fab fa-js"></i> JavaScript</span>
+            <span class="tech-icon"><i class="fas fa-database"></i> NoSQL</span>
+            <span class="tech-icon"><i class="fab fa-php"></i> PHP</span>
+            <span class="tech-icon"><i class="fab fa-php"></i> MongoDB</span>
+          </div>
+          <div class="descriptionProjects">
+            StandSpeakAct is a socially driven educational blog platform that combats misinformation by promoting truth, awareness, and meaningful dialogue on critical global issues such as climate change, teenage pregnancy, cyberbullying, and data privacy. It offers research-backed content in a respectful, empathetic space that encourages critical thinking, informed discussion, and community engagement, inspiring users to advocate for truth and take action on issues that matter. <a class="projectLink" href="projects/project-standspeakact.html">View More</a>
+  
+          </div>
+          <div class="action-row">
+            <a href="https://stand-speak-act.42web.io/index.html" class="left left2" target="_blank">« Working Sample</a>
+            <a href="https://github.com/Satwinder-stack/Stand-Speak-Act.git" class="right right2" target="_blank">Source Code »</a>
+          </div>
+        </div>
+
+        <div class="project-details active" id="project-5">
+          <a class="titleLink" href="projects/project-coffee-cat.html"><h2>COFFEE CAT WEB SYSTEM</h2></a>
+          <div class="date">08/27/2025 - 09/11/2025</div>
+          <div class="tech-stack tech-stack2">
+            <span class="tech-icon"><i class="fab fa-html5"></i> HTML5</span>
+            <span class="tech-icon"><i class="fab fa-css3-alt"></i> CSS3</span>
+            <span class="tech-icon"><i class="fab fa-js"></i> JavaScript</span>
+            <span class="tech-icon"><i class="fas fa-database"></i> JSON</span>
+          </div>
+          <div class="descriptionProjects">
+            Coffee Cat Café is a web-based café concept designed to showcase a warm, inviting space where coffee culture meets animal companionship. Through the website, users can learn about the café's city-center location, explore its selection of premium coffee and freshly made treats, and discover the unique experience of relaxing alongside friendly resident cats. The platform highlights the café's cozy atmosphere, introduces each cat, and provides essential information such as visiting guidelines, hours, and events—allowing visitors to connect with the Coffee Cat Café experience even before stepping through the door. <a class="projectLink" href="projects/project-coffee-cat.html">View More</a>
+          </div>
+          <div class="action-row">
+            <a href="https://satwinder-stack.github.io/Coffee-Cat-Finale/" class="left left2" target="_blank">« Working Sample</a>
+            <a href="https://github.com/Satwinder-stack/Coffee-Cat-Finale.git" class="right right2" target="_blank">Source Code »</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="projects-section projects-section2" id="Projects">
+  <div id="sticky-trigger"></div>
+  <br><br><br><br><br><br><br><br><br><br>
+  <div class="tech-stack-wrapper second-tech-stack-wrapper">
+    <!-- Tech stack selector -->
+    <div class="tech-stack">
+      <img src="../images/arrow-left.svg" alt="left arrow" class="nav-arrow left">
+
+      <div class="tech-icon active">
+        <img src="../images/php.png" alt="php logo" class="language" data-tech="php">
+      </div>
+
+      <div class="tech-icon">
+        <img src="../images/python.png" alt="python logo" class="language" data-tech="python">
+      </div>
+
+      <div class="tech-icon">
+        <img src="../images/html.png" alt="html logo" class="language" data-tech="html">
+      </div>
+
+      <div class="tech-icon">
+        <img src="../images/css-3.png" alt="css logo" class="language" data-tech="css">
+      </div>
+
+      <div class="tech-icon">
+        <img src="../images/js.png" alt="javascript logo" class="language" data-tech="javascript">
+      </div>
+
+      <div class="tech-icon">
+        <img src="../images/java.png" alt="java logo" class="language" data-tech="java">
+      </div>
+
+      <div class="tech-icon">
+        <img src="../images/wordpress.png" alt="wordpress logo" class="language" data-tech="wordpress">
+      </div>
+
+      <div class="tech-icon">
+        <img src="../images/database.png" alt="mysql logo" class="language" data-tech="mysql">
+      </div>
+
+      <div class="tech-icon">
+        <img src="../images/vue.png" alt="vue logo" class="language" data-tech="vue">
+      </div>
+
+      <div class="tech-icon">
+        <img src="../images/nosql.png" alt="nosql logo" class="language" data-tech="nosql">
+      </div>
+
+      <img src="../images/arrow-right.svg" alt="right arrow" class="nav-arrow right">
+    </div>
+  </div>
+  <div id="here"></div>
+<!-- =============================================================== -->
+<br>
+<br>
+  <!-- Projects grid -->
+  <div class="projects-grid">
+
+    <div class="project-card " 
+    data-tags="php mysql javascript html css"
+    data-gallery="
+    ../images/projects/parking_system_image1.png,
+    ../images/projects/parking_system_image5.png,
+    ../images/projects/parking_system_image6.png,
+    ../images/projects/parking_system_image2.png,
+    ../images/projects/parking_system_image3.png,
+    ../images/projects/parking_system_image7.png,
+    ../images/projects/parking_system_image8.png,
+    ../images/projects/parking_system_image4.png,
+    ../images/projects/parking_system_image9.png,
+    ../images/projects/parking_system_image10.png">     
+
+    <img src="../images/parking system.jpg" alt="Smart Parking system thumbnail">
+      <div class="project-content">
+        <h3>Smart Parking System</h3>
+        <p class="date">May-Jun 2025</p>
+        <p class="descriptionProjects">Real-time parking reservation web app with spot availability and dynamic pricing.</p>
+        <div class="tech-used">PHP • MySQL • JavaScript • HTML • CSS</div>
+      </div>
+    </div>
+<!-- =============================================================== -->
+
+    <div class="project-card " 
+    data-tags="php mysql javascript html css"
+    data-gallery="
+    ../images/projects/seduire_image5.png,
+    ../images/projects/seduire_image6.png,
+    ../images/projects/seduire_image1.png,
+    ../images/projects/seduire_image9.png,
+    ../images/projects/seduire_image10.png,
+    ../images/projects/seduire_image2.png,
+    ../images/projects/seduire_image7.png,
+    ../images/projects/seduire_image8.png,
+    ../images/projects/seduire_image4.png,
+    ../images/projects/seduire_image3.png,
+    ../images/projects/seduire_image11.png"
+    >     
+
+
+      <img src="../images/seduire.jpg" alt="Seduire project thumbnail">
+      <div class="project-content">
+        <h3>Seduire</h3>
+        <p class="date">Mar-Apr 2024</p>
+        <p class="descriptionProjects">Online shop that offers various kinds of perfumes for both men and women.</p>
+        <div class="tech-used">PHP • MySQL • JavaScript • HTML • CSS</div>
+      </div>
+    </div>
+<!-- =============================================================== -->
+
+    <div class="project-card " 
+    data-tags="php mysql javascript html css"
+    data-gallery="
+    ../images/projects/clinic_inventory_image1.png,
+    ../images/projects/clinic_inventory_image1.5.png,
+    ../images/projects/clinic_inventory_image2.png,
+    ../images/projects/clinic_inventory_image2.5.png,
+    ../images/projects/clinic_inventory_image3.png,
+    ../images/projects/clinic_inventory_image3.5.png,
+    ../images/projects/clinic_inventory_image3.75.png,
+    ../images/projects/clinic_inventory_image4.png"
+    >
+      <img src="../images/clinic inventory system.jpg" alt="Clinic Inventory Management System">
+      <div class="project-content">
+        <h3>Clinic Inventory Management System</h3>
+        <p class="date">Nov-Dec 2025</p>
+        <p class="descriptionProjects">Manage medicines, equipment, and stock levels with a simple and intuitive interface.</p>
+        <div class="tech-used">PHP • MySQL • JavaScript • HTML • CSS</div>
+      </div>
+    </div>
+<!-- =============================================================== -->
+
+    <div class="project-card " 
+    data-tags="html css javascript php nosql vue"
+    data-gallery="
+    ../images/projects/standspeakact_image0.1.png,
+    ../images/projects/standspeakact_image0.25.png,
+    ../images/projects/standspeakact_image0.5.png,
+    ../images/projects/standspeakact_image1.png,
+    ../images/projects/standspeakact_image1.5.png,
+    ../images/projects/standspeakact_image1.75.png,
+    ../images/projects/standspeakact_image1.85.png,
+    ../images/projects/standspeakact_image1.90.png,
+    ../images/projects/standspeakact_image1.95.png,
+    ../images/projects/standspeakact_image5.png,
+    ../images/projects/standspeakact_image5.25.png,
+    ../images/projects/standspeakact_image5.5.png,
+    ../images/projects/standspeakact_image5.75.png,
+    ../images/projects/standspeakact_image2.25.png,
+    ../images/projects/standspeakact_image2.5.png,
+    ../images/projects/standspeakact_image2.75.png,
+    ../images/projects/standspeakact_image3.png,
+    ../images/projects/standspeakact_image3.25.png,
+    ../images/projects/standspeakact_image3.5.png,
+    ../images/projects/standspeakact_image3.75.png,
+    ../images/projects/standspeakact_image3.85.png,
+    ../images/projects/standspeakact_image3.95.png,
+    ../images/projects/standspeakact_image3.975.png,
+    ../images/projects/standspeakact_image3.985.png,
+    ../images/projects/standspeakact_image4.png,
+    ../images/projects/standspeakact_image4.25.png,
+    ../images/projects/standspeakact_image4.5.png,
+    ../images/projects/standspeakact_image4.75.png,
+    ../images/projects/standspeakact_image4.85.png
+    "
+    >
+      <img src="../images/standspeakact.jpg" alt="Stand Speak Act News Site">
+      <div class="project-content">
+        <h3>Stand Speak Act - A News Site</h3>
+        <p class="date">Oct 2025</p>
+        <p class="descriptionProjects">Responsive news website with dynamic content loading, Vue.js components, and animations.</p>
+        <div class="tech-used">HTML • CSS • JavaScript • Vue • PHP • NoSQL</div>
+      </div>
+    </div>
+<!-- =============================================================== -->
+
+    <div class="project-card " 
+    data-tags="html css javascript json"
+    data-gallery="
+    ../images/projects/coffee_cat_image1.png,
+    ../images/projects/coffee_cat_image1.5.png,
+    ../images/projects/coffee_cat_image1.75.png,
+    ../images/projects/coffee_cat_image1.85.png,
+    ../images/projects/coffee_cat_image2.png,
+    ../images/projects/coffee_cat_image2.5.png,
+    ../images/projects/coffee_cat_image2.75.png,
+    ../images/projects/coffee_cat_image2.85.png,
+    ../images/projects/coffee_cat_image2.95.png,
+    ../images/projects/coffee_cat_image2.96.png,
+    ../images/projects/coffee_cat_image2.97.png,
+    ../images/projects/coffee_cat_image2.98.png,
+    ../images/projects/coffee_cat_image2.99.png,
+    ../images/projects/coffee_cat_image2.9925.png,
+    ../images/projects/coffee_cat_image2.995.png,
+    ../images/projects/coffee_cat_image3.png,
+    ../images/projects/coffee_cat_image3.25.png,
+    ../images/projects/coffee_cat_image3.5.png,
+    ../images/projects/coffee_cat_image3.75.png,
+    ../images/projects/coffee_cat_image3.85.png,
+    ../images/projects/coffee_cat_image3.95.png,
+    ../images/projects/coffee_cat_image4.png
+    "
+    >
+      <img src="../images/coffeecat.jpg" alt="Coffee Cat Website">
+      <div class="project-content">
+        <h3>Coffee Cat - A Coffee Shop Website</h3>
+        <p class="date">Oct 2025</p>
+        <p class="descriptionProjects">Interactive website for a coffee shop with menu, gallery, and customer feedback forms.</p>
+        <div class="tech-used">HTML • CSS • JavaScript • JSON</div>
+      </div>
+    </div>
+<!-- =============================================================== -->
+    <div class="project-card " 
+    data-tags="python"
+    data-gallery="
+    ../images/projects/voice_access_control0.25.png,
+    ../images/projects/voice_access_control0.5.png,
+    ../images/projects/voice_access_control1.png,
+    ../images/projects/voice_access_control1.5.png,
+    ../images/projects/voice_access_control2.png,
+    ../images/projects/voice_access_control2.5.png,
+    ../images/projects/voice_access_control3.0.png,
+    ../images/projects/voice_access_control3.5.png,
+    ../images/projects/voice_access_control4.png,
+    ../images/projects/voice_access_control4.5.png,
+    ../images/projects/voice_access_control5.png,
+    ../images/projects/voice_access_control5.5.png,
+    ../images/projects/voice_access_control6.png
+    "
+    >
+      <img src="../images/voice_access_control.jpg" alt="Automated Voice Access Control">
+      <div class="project-content">
+        <h3>Automated Voice Access Control</h3>
+        <p class="date">Dec 2025</p>
+        <p class="descriptionProjects">Voice recognition system to manage secure access using Python and speech APIs.</p>
+        <div class="tech-used">Python • Speech Recognition</div>
+      </div>
+    </div>
+<!-- =============================================================== -->
+    <div class="project-card " 
+    data-tags="html css"
+    data-gallery="
+      ../images/projects/furnishing1.png,
+      ../images/projects/furnishing2.png,
+      ../images/projects/furnishing3.png
+    "
+    >
+      <img src="../images/furnishing.png" alt="Furnishing Store Homepage">
+      <div class="project-content">
+        <h3>Furnishing Homepage</h3>
+        <p class="date">Sept 2025</p>
+        <p class="descriptionProjects">Homepage design for a furniture store with responsive layout and product showcase.</p>
+        <div class="tech-used">HTML • CSS</div>
+      </div>
+    </div>
+<!-- =============================================================== -->
+
+    <div class="project-card " data-tags="java">
+      <img src="../images/enrollment.png" alt="Enrollment System">
+      <div class="project-content">
+        <h3>Enrollment System</h3>
+        <p class="date">Feb 2023</p>
+        <p class="descriptionProjects">Java-based application to manage student enrollment and class registrations.</p>
+        <div class="tech-used">Java • OOP</div>
+      </div>
+    </div>
+<!-- =============================================================== -->
+
+    <div class="project-card " data-tags="python">
+      <img src="../images/finance database.jpg" alt="Self-Made Finance Database">
+      <div class="project-content">
+        <h3>Self-Made Finance Database</h3>
+        <p class="date">Feb-March 2024</p>
+        <p class="descriptionProjects">Python-based database application to track personal finances and generate reports.</p>
+        <div class="tech-used">Python • GUI • Mathplotlib</div>
+      </div>
+    </div>
+<!-- =============================================================== -->
+
+    <div class="project-card " 
+    data-tags="wordpress html css"
+    data-gallery="
+    ../images/projects/hutao_travels1.png,
+    ../images/projects/hutao_travels2.png,
+    ../images/projects/hutao_travels2.0.png,
+    ../images/projects/hutao_travels2.1.png,
+    ../images/projects/hutao_travels2.2.png,
+    ../images/projects/hutao_travels2.3.png,
+    ../images/projects/hutao_travels2.4.png,
+    ../images/projects/hutao_travels2.5.png,
+    ../images/projects/hutao_travels2.6.png,
+    ../images/projects/hutao_travels2.7.png,
+    ../images/projects/hutao_travels2.8.png,
+    ../images/projects/hutao_travels2.9.png,
+    ../images/projects/hutao_travels2.95.png,
+
+    ../images/projects/hutao_travels2.11.png,
+    ../images/projects/hutao_travels2.12.png,
+    ../images/projects/hutao_travels2.13.png,
+    ../images/projects/hutao_travels2.14.png,
+    ../images/projects/hutao_travels2.15.png,
+
+    ../images/projects/hutao_travels2.21.png,
+    ../images/projects/hutao_travels2.22.png,
+    ../images/projects/hutao_travels2.23.png,
+    ../images/projects/hutao_travels2.24.png,
+    ../images/projects/hutao_travels2.25.png,
+
+    ../images/projects/hutao_travels2.31.png,
+    ../images/projects/hutao_travels2.32.png,
+    ../images/projects/hutao_travels2.33.png,
+    ../images/projects/hutao_travels2.34.png,
+    ../images/projects/hutao_travels2.35.png,
+
+    ../images/projects/hutao_travels2.41.png,
+    ../images/projects/hutao_travels2.42.png,
+    ../images/projects/hutao_travels2.43.png,
+    ../images/projects/hutao_travels2.44.png,
+    ../images/projects/hutao_travels2.45.png,
+    
+    ../images/projects/hutao_travels2.51.png,
+    ../images/projects/hutao_travels2.52.png,
+    ../images/projects/hutao_travels2.53.png,
+    ../images/projects/hutao_travels2.54.png,
+    ../images/projects/hutao_travels2.55.png,
+
+    ../images/projects/hutao_travels2.61.png,
+    ../images/projects/hutao_travels2.62.png,
+    ../images/projects/hutao_travels2.63.png,
+    ../images/projects/hutao_travels2.64.png,
+    ../images/projects/hutao_travels2.65.png,
+    
+    ../images/projects/hutao_travels2.71.png,
+    ../images/projects/hutao_travels2.72.png,
+    ../images/projects/hutao_travels2.73.png,
+    ../images/projects/hutao_travels2.74.png,
+    ../images/projects/hutao_travels2.75.png,
+    
+    ../images/projects/hutao_travels2.81.png,
+    ../images/projects/hutao_travels2.82.png,
+    ../images/projects/hutao_travels2.83.png,
+    ../images/projects/hutao_travels2.84.png,
+    ../images/projects/hutao_travels2.85.png,
+
+    ../images/projects/hutao_travels2.91.png,
+    ../images/projects/hutao_travels2.92.png,
+    ../images/projects/hutao_travels2.93.png,
+    ../images/projects/hutao_travels2.94.png,
+    ../images/projects/hutao_travels2.945.png,
+
+    ../images/projects/hutao_travels2.951.png,
+    ../images/projects/hutao_travels2.952.png,
+    ../images/projects/hutao_travels2.953.png,
+    ../images/projects/hutao_travels2.954.png,
+    ../images/projects/hutao_travels2.955.png,
+
+    ../images/projects/hutao_travels3.1.png,
+    ../images/projects/hutao_travels3.2.png,
+    ../images/projects/hutao_travels3.3.png,
+    ../images/projects/hutao_travels3.4.png,
+
+    ../images/projects/hutao_travels4.png,
+    ../images/projects/hutao_travels4.1.png,
+    ../images/projects/hutao_travels4.2.png
+
+    "
+    >
+      <img src="../images/hutaotravels.png" alt="Japan travel guide">
+      <div class="project-content">
+        <h3>Japan Travel Guide</h3>
+        <p class="date">March 2025</p>
+        <p class="descriptionProjects">WordPress website providing travel tips, itineraries, and local guides for Japan travelers.</p>
+        <div class="tech-used">WordPress • HTML • CSS</div>
+      </div>
+    </div>
+<!-- =============================================================== -->
+
+    <div class="project-card project-type-containe" 
+    data-tags="wordpress html css"
+    data-gallery="
+    ../images/projects/huan_cafe_image1.png,
+    ../images/projects/huan_cafe_image1.1.png,
+    ../images/projects/huan_cafe_image1.2.png,
+    ../images/projects/huan_cafe_image1.3.png,
+    ../images/projects/huan_cafe_image1.4.png,
+    ../images/projects/huan_cafe_image1.6.png,
+
+    ../images/projects/huan_cafe_image2.png,
+    ../images/projects/huan_cafe_image2.1.png,
+    ../images/projects/huan_cafe_image2.2.png,
+    ../images/projects/huan_cafe_image2.6.png,
+    ../images/projects/huan_cafe_image2.7.png,
+
+    ../images/projects/huan_cafe_image3.1.png,
+    ../images/projects/huan_cafe_image3.2.png,
+    ../images/projects/huan_cafe_image3.3.png,
+    ../images/projects/huan_cafe_image3.4.png,
+    ../images/projects/huan_cafe_image3.5.png,
+
+    ../images/projects/huan_cafe_image3.511.png,
+    ../images/projects/huan_cafe_image3.512.png,
+    ../images/projects/huan_cafe_image3.513.png,
+    ../images/projects/huan_cafe_image3.514.png,
+    ../images/projects/huan_cafe_image3.515.png,
+
+    ../images/projects/huan_cafe_image3.521.png,
+    ../images/projects/huan_cafe_image3.522.png,
+
+    ../images/projects/huan_cafe_image3.531.png,
+    ../images/projects/huan_cafe_image3.532.png,
+    ../images/projects/huan_cafe_image3.533.png,
+    ../images/projects/huan_cafe_image3.534.png,
+    ../images/projects/huan_cafe_image3.535.png,
+
+    ../images/projects/huan_cafe_image3.541.png,
+    ../images/projects/huan_cafe_image3.542.png,
+    ../images/projects/huan_cafe_image3.543.png,
+    ../images/projects/huan_cafe_image3.544.png,
+    ../images/projects/huan_cafe_image3.545.png,
+
+    ../images/projects/huan_cafe_image3.551.png,
+    ../images/projects/huan_cafe_image3.552.png,
+    ../images/projects/huan_cafe_image3.553.png,
+    ../images/projects/huan_cafe_image3.554.png,
+    ../images/projects/huan_cafe_image3.555.png,
+
+    ../images/projects/huan_cafe_image3.561.png,
+    ../images/projects/huan_cafe_image3.562.png,
+    ../images/projects/huan_cafe_image3.563.png,
+    ../images/projects/huan_cafe_image3.564.png,
+    ../images/projects/huan_cafe_image3.565.png,
+
+    ../images/projects/huan_cafe_image3.571.png,
+    ../images/projects/huan_cafe_image3.572.png,
+    ../images/projects/huan_cafe_image3.573.png,
+    ../images/projects/huan_cafe_image3.574.png,
+    ../images/projects/huan_cafe_image3.575.png,
+
+    ../images/projects/huan_cafe_image3.581.png,
+    ../images/projects/huan_cafe_image3.582.png,
+    ../images/projects/huan_cafe_image3.583.png,
+    ../images/projects/huan_cafe_image3.584.png,
+    ../images/projects/huan_cafe_image3.585.png,
+
+    ../images/projects/huan_cafe_image3.7.png,
+    ../images/projects/huan_cafe_image4.png,
+    ../images/projects/huan_cafe_image4.1.png,
+    ../images/projects/huan_cafe_image4.2.png
+
+    "
+    >
+      <img src="../images/huancoffee.png" alt="Coffee shop promotional website">
+      <div class="project-content">
+        <h3>Huan Coffee cafe</h3>
+        <p class="date">March 2024</p>
+        <p class="descriptionProjects">WordPress website that promotes a coffee shop named Huan Coffee.</p>
+        <div class="tech-used">WordPress • HTML • CSS</div>
+      </div>
+
+    
+
+
+
+
+
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br>
+<br><br><br>
+
+<section class="collaboration" id="Collaborations">
+  <h1 class="collab-projects">COLLABORATIVE PROJECTS</h1>
+  <div class="collaborative-content">
+    <div class="content1">
+      <h2>STANDSPEAKACT</h2>
+      <p>A blog and news platform where users can read and write articles to highlight social issues. Authored content is published publicly, allowing for discussion and awareness. Developed collaboratively with Elisha Gania, Karl Guiao, Kimberly Puno, and Shane Cordero.</p>
+    </div>
+    <div class="content2">
+      <img src="../images/standspeakact.jpg" alt="Stand Speak Act Website Screenshot">
+      <img src="../images/group 5.png" alt="Project Team Photo">
+    </div>
+  </div>
+  <br><br><br>
+
+  <div class="collaborative-content">
+    <div class="content2 first">
+      <img src="../images/seduire.jpg" alt="Seduire Dashboard Screenshot">
+    </div>
+    <div class="content1 second">
+      <h2>SEDUIRE</h2>
+      <p>An interactive sales analytics dashboard that visualizes key performance metrics, trends, and reports for business decision-making. Built in collaboration with Pangilinan Gabrielle, Gonzales John Patrick, Guiao Karl, De Jesus Mark.</p>
+    </div>
+  </div>
+  <br><br>
+
+  <div class="collaborative-content">
+    <div class="content1">
+      <h2>FINANCE DATABASE</h2>
+      <p>A Python-based finance management system that tracks personal income, expenses, and investments while generating reports. Designed and implemented collaboratively with Pangilinan Gabrielle, Venzon Mathew, Gonzales John Patrick.</p>
+    </div>
+    <div class="content2">
+      <img src="../images/finance database.jpg" alt="Finance Database Screenshot">
+      <img src="../images/dsal.png" alt="Project Team Photo">
+    </div>
+  </div>
+  <br><br><br>
+
+  <div class="collaborative-content">
+    <div class="content2 first">
+      <img src="../images/huancoffee.png" alt="Huan Cafe Screenshot">
+    </div>
+    <div class="content1 second">
+      <h2>HUAN COFFEE CAFE</h2>
+      <p>WordPress website that promotes a coffee shop named Huan Coffee. This will be used by the business online through hosting and using a server to hold and maintain the website, this can be visited by searching <a href="https://huancoffee.shop/" class="titleLink huanCoffeeLink" target="_blank">huancoffee.shop</a>. Developed collaboratively with De Jesus Franz Mark, Galang Redge, Guaio Karl.</p>
+    </div>
+  </div>
+
+
+</section>
+
+
+<footer>
+    <div class="footer-container">
+        <div class="left">
+        <p class="copyright">© 2025 SATWINDER JEERH</p>
+        <p class="role">Front-End Developer</p>
+
+        <div class="tech-icons">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732212.png" alt="HTML5 logo" loading="lazy"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732190.png" alt="CSS3 logo" loading="lazy"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968292.png" alt="JavaScript logo" loading="lazy"/>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/Satwinder-stack" target="_blank" rel="noopener" aria-label="GitHub">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733553.png" alt="GitHub logo" loading="lazy"/>
+            </a>
+            <a href="https://www.linkedin.com/in/satwinder-jeerh" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn logo" loading="lazy"/>
+            </a>
+            <a href="mailto:srjeerh09@gmail.com" aria-label="Email">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" alt="Email logo" loading="lazy"/>
+            </a>
+        </div>
+        </div>
+
+        <div class="links" aria-label="Footer navigation">
+            <div>
+                <h4>ABOUT</h4>
+                <a href="about.html">Meet the Developer</a>
+                <a href="about.html">Badges</a>
+                <a href="about.html">Certificates</a>
+                <a href="about.html">Achievements</a>
+            </div>
+            <div>
+                <h4>PROJECTS</h4>
+                <a href="projects.html">Project Video</a>
+                <a href="projects.html">Project List</a>
+                <a href="projects.html">Languages</a>
+                <a href="projects.html">Collaborative Projects</a>
+            </div>
+            <div>
+                <h4>BLOGS</h4>
+                <a href="blogs/ai-stagnation.html">AI Stagnation</a>
+                <a href="blogs/ai-tool-or-human.html">AI: Tool or human</a>
+                <a href="blogs/ai-vs-traditional.html">AI vs Traditional</a>
+                <a href="blogs/human-dependency.html">Human Dependency</a>
+            </div>
+            <div>
+                <h4>RESUME</h4>
+                <a href="resume.html">About me</a>
+                <a href="resume.html">How to Contact</a>
+                <a href="resume.html">Education</a>
+                <a href="resume.html">Experience</a>
+            </div>
+            <div>
+                <h4>CONTACT</h4>
+                <a href="contact.html">Phone No.</a>
+                <a href="contact.html">Email</a>
+                <a href="contact.html">Linkedin</a>
+                <a href="contact.html">Testimonials</a>
+            </div>
+
+
+        </div>
+    </div>
+  </footer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</main>
+<script src="../javascript/loading_screen.js"></script>
+<script src="../javascript/navigation.js"></script>
+<script src="../javascript/projects.js"></script>
+<script src="../javascript/draggable_navigation.js"></script>
+
+
+<div id="project-lightbox" class="lightbox">
+    <span class="close-lightbox">&times;</span>
+    <img class="nav-arrow-lightbox left" src="../images/arrow-left.svg" alt="Previous">
+    
+    <div class="lightbox-content">
+        <img id="lightbox-img" src="" alt="Project Image">
+    </div>
+
+    <img class="nav-arrow-lightbox right" src="../images/arrow-right.svg" alt="Next">
+</div>
+</body>
+</html>

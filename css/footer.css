@@ -1,0 +1,136 @@
+
+
+footer {
+    background-color: #0d0d0d;
+    color: #e0e0e0;
+    font-family: "Tektur", sans-serif;
+    font-size: clamp(13px, 2.2vw, 15px);
+    padding: clamp(2.5rem, 6vw, 4rem) 1.5rem;
+    border-top: 1px solid #222;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.4rem;
+}
+
+.left .copyright {
+    font-weight: 700;
+    font-size: clamp(25px, 2.8vw, 30px);
+    letter-spacing: 0.6px;
+    margin: 0;
+}
+
+.left .role {
+    font-weight: 300;
+    font-size: clamp(20px, 2.4vw, 25px);
+    color: #a0a0a0;
+    margin: 0;
+}
+
+.tech-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.2rem;
+}
+
+.tech-icons img {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    padding: 6px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.45);
+    transition: all 0.28s ease;
+    background-size: cover;
+}
+
+.tech-icons img:hover {
+    transform: scale(1.18) rotate(4deg);
+    filter: brightness(1.15);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+}
+
+.tech-icons img:nth-child(1) { background-color: #e34c26; } /* HTML */
+.tech-icons img:nth-child(2) { background-color: #1572b6; } /* CSS */
+.tech-icons img:nth-child(3) { background-color: #f0db4f; } /* JS  */
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.4rem;
+}
+
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #1a1a1a;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+    transition: all 0.28s ease;
+}
+
+.social-links a:hover {
+    background-color: #333;
+    transform: scale(1.15);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
+.social-links a img {
+    width: 22px;
+    height: 22px;
+    filter: brightness(0) invert(1);
+    transition: filter 0.28s ease;
+}
+
+.social-links a:hover img {
+    filter: brightness(1) invert(0);
+}
+
+.links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 2.5rem 1.5rem;
+    text-align: center;
+}
+
+.links > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.links h4 {
+    font-weight: 700;
+    margin: 0 0 0.8rem;
+    color: #f0f0f0;
+    font-size: clamp(15px, 2.6vw, 17px);
+    letter-spacing: 0.5px;
+}
+
+.links a {
+    color: #bbb;
+    text-decoration: none;
+    transition: color 0.25s ease;
+    font-size: 0.96rem;
+}
+
+.links a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+

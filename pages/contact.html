@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+      (function() {
+          // 1. Check storage immediately
+          const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
+          const now = new Date();
+          const isDaytime = now.getHours() >= 6 && now.getHours() < 18;
+          const manualTheme = sessionStorage.getItem('selectedTheme');
+          const isManualControl = sessionStorage.getItem('themeManualOverride') === 'true';
+
+          // 2. Kill the splash immediately if already seen
+          if (hasSeenSplash) {
+              document.documentElement.classList.add('splash-hidden');
+          }
+
+          // 3. Set the theme (to prevent the flash you fixed earlier)
+          if (isManualControl) {
+              if (manualTheme === 'light-theme') document.documentElement.classList.add('light-theme');
+          } else if (isDaytime) {
+              document.documentElement.classList.add('light-theme');
+          }
+      })();
+
+      
+        // Run this immediately to prevent flickering
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // 1. Determine which theme to apply
+            // Priority: Saved Preference > System Preference > Default (Dark)
+            const initialTheme = savedTheme || (systemDark ? 'dark' : 'dark'); 
+
+            // 2. Apply it to the document
+            document.documentElement.setAttribute('data-theme', initialTheme);
+            if (initialTheme === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="../css/loading_screen.css">
+  <link rel="stylesheet" href="../css/splash_screen.css">
+  <link rel="stylesheet" href="../css/contact.css">
+  <link rel="stylesheet" href="../css/header.css">
+  <link rel="stylesheet" href="../css/footer.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tektur&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <title>Contact | Satwinder Jeerh</title>
+</head>
+<body>
+
+<div id="page-transition-loader" class="transition-loader">
+    <div class="loader-content">
+        <p class="loader-text mode-text"></p>
+        <div class="loader-progress-container">
+            <div id="loader-bar" class="loader-progress-bar"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div id="splash-screen">
+    <div class="amv-overlay"></div>
+
+    <div class="splash-content">
+        <div class="clock-artifact-wrapper">
+            <div class="magic-seal outer-seal"></div>
+            <div class="magic-seal inner-seal"></div>
+
+            <svg class="historical-clock" viewBox="0 0 100 100">
+                <defs>
+                    <filter id="bronze-texture">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+                        <feDiffuseLighting in="noise" lighting-color="#8b5a2b" surfaceScale="2">
+                            <feDistantLight azimuth="45" elevation="35" />
+                        </feDiffuseLighting>
+                    </filter>
+                    <filter id="amv-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="1.5" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <circle cx="50" cy="50" r="48" fill="url(#bronze-texture)" stroke="#3d2b1f" stroke-width="1.5" />
+                <circle cx="50" cy="50" r="44" fill="#0d0d0d" stroke="#c5a059" stroke-width="0.3" opacity="0.5" />
+
+                <g class="runes" fill="#c5a059" filter="url(#amv-glow)" font-family="serif" font-weight="900" font-size="6">
+                    <text x="50" y="16" text-anchor="middle">XII</text>
+                    <text x="85" y="52" text-anchor="middle">III</text>
+                    <text x="50" y="88" text-anchor="middle">VI</text>
+                    <text x="15" y="52" text-anchor="middle">IX</text>
+                </g>
+
+                <g class="center-gear moving-part" id="gear-element">
+                    <circle cx="50" cy="50" r="8" fill="none" stroke="#c5a059" stroke-width="0.5" stroke-dasharray="2,1" />
+                    <path d="M50 42 L50 58 M42 50 L58 50" stroke="#c5a059" stroke-width="0.2" />
+                </g>
+
+                <g class="hands-group" filter="url(#amv-glow)">
+                    <path id="hour-hand" d="M50 50 L50 25 L53 45 L47 45 Z" fill="#fff" style="transform-origin: 50px 50px;" />
+                    <path id="minute-hand" d="M50 50 L50 15 L51.5 40 L48.5 40 Z" fill="#d4af37" style="transform-origin: 50px 50px;" />
+                    <line id="second-hand" x1="50" y1="60" x2="50" y2="8" stroke="#ffd700" stroke-width="0.4" style="transform-origin: 50px 50px;" />
+                </g>
+
+                <circle cx="50" cy="50" r="2" fill="#1a1a1a" stroke="#ffd700" stroke-width="0.5" />
+            </svg>
+        </div>
+
+        <div class="historical-title">
+            <span class="line"></span>
+            <h2>CHRONICLE OF 2026</h2>
+            <span class="line"></span>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header>
+  <div class="brand">
+    <a href="../index.html">
+      <img src="../images/logo dark mode.png" alt="Logo dark mode" class="logo-dark">
+      <img src="../images/logo light mode.png" alt="Logo Light Mode" class="logo-light">
+    </a>
+  </div>
+
+  <button class="menu-toggle" aria-label="Open menu">☰</button>
+
+  <nav id="main-nav">
+    <a href="about.html">ABOUT</a>
+    <a href="projects.html">PROJECTS</a>
+    <a href="blog.html">BLOG</a> 
+    <a href="resume.html">RESUME</a>
+    <a href="contact.html">CONTACT</a>
+    
+    <button id="theme-toggle" class="theme-btn-rect" aria-label="Toggle theme">
+        <span class="mode-text">NIGHT</span>
+    </button>
+  </nav>
+</header>
+
+
+<div class="container">
+
+  <section class="contact">
+    <h1>CONTACT</h1>
+    <p class="intro">
+      I'm always open to new opportunities and collaborations.<br>
+      Feel free to reach out — I'll get back to you as soon as possible!
+    </p>
+
+    <form action="https://api.web3forms.com/submit" method="POST" class="form" id="contact-form">
+  
+      <input type="hidden" name="access_key" value="f81ef657-4f0c-4eaf-a1c0-0faec12aec80">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" class="underline-input" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" class="underline-input" placeholder="your@email.com" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" class="underline-input" placeholder="How can I help you?" required></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn">SEND MESSAGE</button>
+      
+      <p id="form-result" style="display:none; margin-top: 1.5rem; font-weight: 500; text-align: center;"></p>
+    </form>
+
+    <div class="social">
+      <a href="mailto:srjeerh09@gmail.com" class="social-item">
+        <div class="icon-box">
+          <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" alt="Email" class="social-icon color-icon" loading="lazy">
+        </div>
+        <div>
+          <strong>Email</strong><br>
+          srjeerh09@gmail.com
+        </div>
+      </a>
+      <a href="https://github.com/Satwinder-stack" target="_blank" class="social-item">
+        <div class="icon-box">
+          <img src="https://cdn-icons-png.flaticon.com/512/733/733553.png" alt="GitHub" class="social-icon color-icon" loading="lazy">
+        </div>
+        <div>
+          <strong>GitHub</strong><br>
+          Satwinder-stack
+        </div>
+      </a>
+      <a href="tel:+639205614310" class="social-item">
+        <div class="icon-box">
+          <img src="https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/phone-call-white-icon.png" 
+              alt="Phone" class="social-icon phone-icon-white" loading="lazy">
+          
+          <img src="../images/phone.png" 
+              alt="Phone" class="social-icon phone-icon-black" loading="lazy">
+        </div>
+        <div>
+          <strong>Phone</strong><br>
+          +63 920 561 4310
+        </div>
+      </a>
+      <a href="https://www.linkedin.com/in/satwinder-jeerh" target="_blank" class="social-item">
+        <div class="icon-box">
+          <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn" class="social-icon color-icon" loading="lazy">
+        </div>
+        <div>
+          <strong>LinkedIn</strong><br>
+          Satwinder Jeerh
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="testimonials-section">
+    <h1>TESTIMONIALS</h1>
+
+    <div class="featured-testimonial">
+      <div class="testimonial-content">
+        <div class="main-photo">
+          <img id="current-photo" src="../images/mark.jpg" alt="Mark De Jesus">
+        </div>
+        <div class="quote-container">
+          <div id="current-quote" class="quoteContact">
+            "Watching Satwinder code is kind of mesmerizing. They make the impossible seem simple, and they're always ready to help when I'm stuck."
+          </div>
+          <div id="current-author" class="author">
+            — Mark De Jesus | Project Manager
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="thumbnails">
+      <div class="thumb-btn active" onclick="showTestimonial(0)">
+        <img src="../images/mark.jpg" alt="Mark De Jesus">
+        <span>Mark De Jesus<br>Project Manager</span>
+      </div>
+      <div class="thumb-btn" onclick="showTestimonial(1)">
+        <img src="../images/karl.jpg" alt="Karl Guiao">
+        <span>Karl Guiao<br>UI Designer</span>
+      </div>
+      <div class="thumb-btn" onclick="showTestimonial(2)">
+        <img src="../images/redge.jpg" alt="Redge Galang">
+        <span>Redge Galang<br>Web Developer</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<footer>
+    <div class="footer-container">
+        <div class="left">
+        <p class="copyright">© 2025 SATWINDER JEERH</p>
+        <p class="role">Front-End Developer</p>
+
+        <div class="tech-icons">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732212.png" alt="HTML5 logo" loading="lazy"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732190.png" alt="CSS3 logo" loading="lazy"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968292.png" alt="JavaScript logo" loading="lazy"/>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/Satwinder-stack" target="_blank" rel="noopener" aria-label="GitHub">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733553.png" alt="GitHub logo" loading="lazy"/>
+            </a>
+            <a href="https://www.linkedin.com/in/satwinder-jeerh" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn logo" loading="lazy"/>
+            </a>
+            <a href="mailto:srjeerh09@gmail.com" aria-label="Email">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" alt="Email logo" loading="lazy"/>
+            </a>
+        </div>
+        </div>
+
+        <div class="links" aria-label="Footer navigation">
+            <div>
+                <h4>ABOUT</h4>
+                <a href="about.html">Meet the Developer</a>
+                <a href="about.html">Badges</a>
+                <a href="about.html">Certificates</a>
+                <a href="about.html">Achievements</a>
+            </div>
+            <div>
+                <h4>PROJECTS</h4>
+                <a href="projects.html">Project Video</a>
+                <a href="projects.html">Project List</a>
+                <a href="projects.html">Languages</a>
+                <a href="projects.html">Collaborative Projects</a>
+            </div>
+            <div>
+                <h4>BLOGS</h4>
+                <a href="blogs/ai-stagnation.html">AI Stagnation</a>
+                <a href="blogs/ai-tool-or-human.html">AI: Tool or human</a>
+                <a href="blogs/ai-vs-traditional.html">AI vs Traditional</a>
+                <a href="blogs/human-dependency.html">Human Dependency</a>
+            </div>
+            <div>
+                <h4>RESUME</h4>
+                <a href="resume.html">About me</a>
+                <a href="resume.html">How to Contact</a>
+                <a href="resume.html">Education</a>
+                <a href="resume.html">Experience</a>
+            </div>
+            <div>
+                <h4>CONTACT</h4>
+                <a href="contact.html">Phone No.</a>
+                <a href="contact.html">Email</a>
+                <a href="contact.html">Linkedin</a>
+                <a href="contact.html">Testimonials</a>
+            </div>
+
+
+        </div>
+    </div>
+  </footer>
+
+
+  
+<script src="../javascript/navigation.js"></script>
+<script src="../javascript/loading_screen.js"></script>
+<script src="../javascript/contact.js"></script>
+</body>
+</html>

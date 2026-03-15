@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        (function() {
+            // 1. Check storage immediately
+            const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
+            const now = new Date();
+            const isDaytime = now.getHours() >= 6 && now.getHours() < 18;
+            const manualTheme = sessionStorage.getItem('selectedTheme');
+            const isManualControl = sessionStorage.getItem('themeManualOverride') === 'true';
+
+            // 2. Kill the splash immediately if already seen
+            if (hasSeenSplash) {
+                document.documentElement.classList.add('splash-hidden');
+            }
+
+            // 3. Set the theme (to prevent the flash you fixed earlier)
+            if (isManualControl) {
+                if (manualTheme === 'light-theme') document.documentElement.classList.add('light-theme');
+            } else if (isDaytime) {
+                document.documentElement.classList.add('light-theme');
+            }
+        })();
+
+        
+        // Run this immediately to prevent flickering
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // 1. Determine which theme to apply
+            // Priority: Saved Preference > System Preference > Default (Dark)
+            const initialTheme = savedTheme || (systemDark ? 'dark' : 'dark'); 
+
+            // 2. Apply it to the document
+            document.documentElement.setAttribute('data-theme', initialTheme);
+            if (initialTheme === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Cat | Project Showcase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tektur:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../css/loading_screen.css">
+    <link rel="stylesheet" href="../../css/splash_screen.css">
+    <link rel="stylesheet" href="../../css/projects/project-item.css">
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/footer.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+
+<div id="page-transition-loader" class="transition-loader">
+    <div class="loader-content">
+        <p class="loader-text mode-text"></p>
+        <div class="loader-progress-container">
+            <div id="loader-bar" class="loader-progress-bar"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="splash-screen">
+    <div class="amv-overlay"></div>
+
+    <div class="splash-content">
+        <div class="clock-artifact-wrapper">
+            <div class="magic-seal outer-seal"></div>
+            <div class="magic-seal inner-seal"></div>
+
+            <svg class="historical-clock" viewBox="0 0 100 100">
+                <defs>
+                    <filter id="bronze-texture">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+                        <feDiffuseLighting in="noise" lighting-color="#8b5a2b" surfaceScale="2">
+                            <feDistantLight azimuth="45" elevation="35" />
+                        </feDiffuseLighting>
+                    </filter>
+                    <filter id="amv-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="1.5" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <circle cx="50" cy="50" r="48" fill="url(#bronze-texture)" stroke="#3d2b1f" stroke-width="1.5" />
+                <circle cx="50" cy="50" r="44" fill="#0d0d0d" stroke="#c5a059" stroke-width="0.3" opacity="0.5" />
+
+                <g class="runes" fill="#c5a059" filter="url(#amv-glow)" font-family="serif" font-weight="900" font-size="6">
+                    <text x="50" y="16" text-anchor="middle">XII</text>
+                    <text x="85" y="52" text-anchor="middle">III</text>
+                    <text x="50" y="88" text-anchor="middle">VI</text>
+                    <text x="15" y="52" text-anchor="middle">IX</text>
+                </g>
+
+                <g class="center-gear moving-part" id="gear-element">
+                    <circle cx="50" cy="50" r="8" fill="none" stroke="#c5a059" stroke-width="0.5" stroke-dasharray="2,1" />
+                    <path d="M50 42 L50 58 M42 50 L58 50" stroke="#c5a059" stroke-width="0.2" />
+                </g>
+
+                <g class="hands-group" filter="url(#amv-glow)">
+                    <path id="hour-hand" d="M50 50 L50 25 L53 45 L47 45 Z" fill="#fff" style="transform-origin: 50px 50px;" />
+                    <path id="minute-hand" d="M50 50 L50 15 L51.5 40 L48.5 40 Z" fill="#d4af37" style="transform-origin: 50px 50px;" />
+                    <line id="second-hand" x1="50" y1="60" x2="50" y2="8" stroke="#ffd700" stroke-width="0.4" style="transform-origin: 50px 50px;" />
+                </g>
+
+                <circle cx="50" cy="50" r="2" fill="#1a1a1a" stroke="#ffd700" stroke-width="0.5" />
+            </svg>
+        </div>
+
+        <div class="historical-title">
+            <span class="line"></span>
+            <h2>CHRONICLE OF 2026</h2>
+            <span class="line"></span>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header>
+  <div class="brand">
+    <a href="../../index.html">
+        <img src="../../images/logo dark mode.png" alt="Logo dark mode" class="logo-dark">
+        <img src="../../images/logo light mode.png" alt="Logo Light Mode" class="logo-light">
+    </a>
+  </div>
+
+  <button class="menu-toggle" aria-label="Open menu">☰</button>
+
+  <nav id="main-nav">
+    <a href="../about.html">ABOUT</a>
+    <a href="../projects.html">PROJECTS</a>
+    <a href="../blog.html">BLOG</a> 
+    <a href="../resume.html">RESUME</a>
+    <a href="../contact.html">CONTACT</a>
+    
+    <button id="theme-toggle" class="theme-btn-rect" aria-label="Toggle theme">
+        <span class="mode-text">NIGHT</span>
+    </button>
+  </nav>
+</header>
+
+
+<div class="container">
+    <h1>Coffee Cat</h1>
+
+    <div class="video-wrapper">
+        <video src="../../videos/coffee cat - COMPRESS.mp4" muted autoplay controls></video>
+    </div>
+
+    <div class="gallery-grid">
+        <div class="gallery-item"><img src="../../images/projects/coffee_cat_image1.png" alt="Cafe Ambience"></div>
+        <div class="gallery-item"><img src="../../images/projects/coffee_cat_image2.png" alt="Coffee Menu"></div>
+        <div class="gallery-item"><img src="../../images/projects/coffee_cat_image3.png" alt="Resident Cats"></div>
+        <div class="gallery-item"><img src="../../images/projects/coffee_cat_image4.png" alt="Interior Design"></div>
+    </div>
+
+    <div class="details-card">
+        <h2>PURPOSE</h2>
+        <p class="description">Creating a digital home for Coffee Cat Cafe, a hidden cafe that features cats as its main attraction. The project focuses on introducing and enhancing the cafe's popularity in the internet, this also allows feline enthusiasts to meet the adorable cats, view cat profiles, and explore a specialized menu in a relaxing environment.</p>
+
+        <h2>CORE FEATURES</h2>
+        <p class="description">
+            • Interactive cat profile gallery with personalized personalities.<br>
+            • Warm aesthetics and UI specialy made for this cafe.<br>
+            • Digital cafe menu with dietary filters and seasonal specials.<br>
+            • Quick introductory to how the cafe started and its history.
+        </p>
+
+        <h2>TECHNOLOGIES USED</h2>
+        <div class="tech-grid">
+            <div class="tech-box"><b>HTML / CSS</b><span>Calming Layout & Warm Aesthetics</span></div>
+            <div class="tech-box"><b>JavaScript</b><span>Smooth Transitions & On-Page Search Engine</span></div>
+            <div class="tech-box"><b>JSON</b><span>Efficient Storage container for lists of menu items</span></div>
+            <div class="tech-box"><b>InfinityFree / FileZilla</b><span>Online Deployment</span></div>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <a href="https://satwinder-stack.github.io/Coffee-Cat-Finale/" target="_blank" class="btn btn-live">Live Demo</a>
+        <a href="https://github.com/Satwinder-stack/Coffee-Cat-Finale.git" target="_blank" class="btn btn-code">Source Code</a>
+    </div>
+</div>
+
+
+
+
+<section class="pagination-section">
+    <div class="nav-container">
+        <nav class="project-navigation" aria-label="Project navigation">
+            <a href="project-standspeakact.html" class="nav-item prev">
+                <span class="nav-meta">04 — PREVIOUS</span>
+                <h3 class="nav-project-title">StandSpeakAct Blog</h3>
+                <span class="nav-arrow">←</span>
+            </a>
+
+            <div class="nav-divider"></div>
+
+            <a href="project-parking-system.html" class="nav-item next">
+                <span class="nav-meta">01 — NEXT</span>
+                <h3 class="nav-project-title">Smart Parking System</h3>
+                <span class="nav-arrow">→</span>
+            </a>
+        </nav>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+<footer>
+    <div class="footer-container">
+        <div class="left">
+        <p class="copyright">© 2025 SATWINDER JEERH</p>
+        <p class="role">Front-End Developer</p>
+
+        <div class="tech-icons">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732212.png" alt="HTML5 logo" loading="lazy"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732190.png" alt="CSS3 logo" loading="lazy"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968292.png" alt="JavaScript logo" loading="lazy"/>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/Satwinder-stack" target="_blank" rel="noopener" aria-label="GitHub">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733553.png" alt="GitHub logo" loading="lazy"/>
+            </a>
+            <a href="https://www.linkedin.com/in/satwinder-jeerh" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn logo" loading="lazy"/>
+            </a>
+            <a href="mailto:srjeerh09@gmail.com" aria-label="Email">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" alt="Email logo" loading="lazy"/>
+            </a>
+        </div>
+        </div>
+
+        <div class="links" aria-label="Footer navigation">
+            <div>
+                <h4>ABOUT</h4>
+                <a href="../about.html">Meet the Developer</a>
+                <a href="../about.html">Badges</a>
+                <a href="../about.html">Certificates</a>
+                <a href="../about.html">Achievements</a>
+            </div>
+            <div>
+                <h4>PROJECTS</h4>
+                <a href="../projects.html">Project Video</a>
+                <a href="../projects.html">Project List</a>
+                <a href="../projects.html">Languages</a>
+                <a href="../projects.html">Collaborative Projects</a>
+            </div>
+            <div>
+                <h4>BLOGS</h4>
+                <a href="../blogs/ai-stagnation.html">AI Stagnation</a>
+                <a href="../blogs/ai-tool-or-human.html">AI: Tool or human</a>
+                <a href="../blogs/ai-vs-traditional.html">AI vs Traditional</a>
+                <a href="../blogs/human-dependency.html">Human Dependency</a>
+            </div>
+            <div>
+                <h4>RESUME</h4>
+                <a href="../resume.html">About me</a>
+                <a href="../resume.html">How to Contact</a>
+                <a href="../resume.html">Education</a>
+                <a href="../resume.html">Experience</a>
+            </div>
+            <div>
+                <h4>CONTACT</h4>
+                <a href="../contact.html">Phone No.</a>
+                <a href="../contact.html">Email</a>
+                <a href="../contact.html">Linkedin</a>
+                <a href="../contact.html">Testimonials</a>
+            </div>
+
+
+        </div>
+    </div>
+  </footer>
+  
+<script src="../../javascript/navigation.js"></script>
+<script src="../../javascript/loading_screen.js"></script>
+<script src="../../javascript/projects/project.js"></script>
+</body>
+</html>

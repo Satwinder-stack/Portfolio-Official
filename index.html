@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // (function() {
+        //     // 1. Check storage immediately
+        //     const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
+        //     const now = new Date();
+        //     const isDaytime = now.getHours() >= 6 && now.getHours() < 18;
+        //     const manualTheme = sessionStorage.getItem('selectedTheme');
+        //     const isManualControl = sessionStorage.getItem('themeManualOverride') === 'true';
+
+        //     // 2. Kill the splash immediately if already seen
+        //     if (hasSeenSplash) {
+        //         document.documentElement.classList.add('splash-hidden');
+        //     }
+
+        //     // 3. Set the theme (to prevent the flash you fixed earlier)
+        //     if (isManualControl) {
+        //         if (manualTheme === 'light-theme') document.documentElement.classList.add('light-theme');
+        //     } else if (isDaytime) {
+        //         document.documentElement.classList.add('light-theme');
+        //     }
+        // })();
+
+        (function() {
+            const now = new Date();
+            const hour = now.getHours();
+            const isDaytime = hour >= 6 && hour < 18; // 6 AM to 6 PM
+            const manualTheme = sessionStorage.getItem('selectedTheme');
+            const isManual = sessionStorage.getItem('themeManualOverride') === 'true';
+
+            // 1. Determine the Theme
+            let themeToApply = 'dark-theme'; // Default
+            if (isManual) {
+                themeToApply = manualTheme;
+            } else {
+                themeToApply = isDaytime ? 'light-theme' : 'dark-theme';
+            }
+
+            // 2. Apply it to the HTML element immediately
+            if (themeToApply === 'light-theme') {
+                document.documentElement.classList.add('light-theme');
+            } else {
+                document.documentElement.classList.remove('light-theme');
+            }
+
+            // 3. Splash Visibility Logic
+            if (sessionStorage.getItem('hasSeenSplash')) {
+                document.documentElement.classList.add('splash-hidden');
+            }
+        })();
+
+
+
+
+
+
+
+
+        
+        // Run this immediately to prevent flickering
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // 1. Determine which theme to apply
+            // Priority: Saved Preference > System Preference > Default (Dark)
+            const initialTheme = savedTheme || (systemDark ? 'dark' : 'dark'); 
+
+            // 2. Apply it to the document
+            document.documentElement.setAttribute('data-theme', initialTheme);
+            if (initialTheme === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satwinder Jeerh | Portfolio</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/loading_screen.css">
+    <link rel="stylesheet" href="css/splash_screen.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tektur&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tektur&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<div id="page-transition-loader" class="transition-loader">
+    <div class="loader-content">
+        <p class="loader-text mode-text"></p>
+        <div class="loader-progress-container">
+            <div id="loader-bar" class="loader-progress-bar"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<div id="splash-screen">
+    <div class="amv-overlay"></div>
+
+    <div class="splash-content">
+        <div class="clock-artifact-wrapper">
+            <div class="magic-seal outer-seal"></div>
+            <div class="magic-seal inner-seal"></div>
+
+            <svg class="historical-clock" viewBox="0 0 100 100">
+                <defs>
+                    <filter id="bronze-texture">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+                        <feDiffuseLighting in="noise" lighting-color="#8b5a2b" surfaceScale="2">
+                            <feDistantLight azimuth="45" elevation="35" />
+                        </feDiffuseLighting>
+                    </filter>
+                    <filter id="amv-glow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="1.5" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <circle cx="50" cy="50" r="48" fill="url(#bronze-texture)" stroke="#3d2b1f" stroke-width="1.5" />
+                <circle cx="50" cy="50" r="44" fill="#0d0d0d" stroke="#c5a059" stroke-width="0.3" opacity="0.5" />
+
+                <g class="runes" fill="#c5a059" filter="url(#amv-glow)" font-family="serif" font-weight="900" font-size="6">
+                    <text x="50" y="16" text-anchor="middle">XII</text>
+                    <text x="85" y="52" text-anchor="middle">III</text>
+                    <text x="50" y="88" text-anchor="middle">VI</text>
+                    <text x="15" y="52" text-anchor="middle">IX</text>
+                </g>
+
+                <g class="center-gear moving-part" id="gear-element">
+                    <circle cx="50" cy="50" r="8" fill="none" stroke="#c5a059" stroke-width="0.5" stroke-dasharray="2,1" />
+                    <path d="M50 42 L50 58 M42 50 L58 50" stroke="#c5a059" stroke-width="0.2" />
+                </g>
+
+                <g class="hands-group" filter="url(#amv-glow)">
+                    <path id="hour-hand" d="M50 50 L50 25 L53 45 L47 45 Z" fill="#fff" style="transform-origin: 50px 50px;" />
+                    <path id="minute-hand" d="M50 50 L50 15 L51.5 40 L48.5 40 Z" fill="#d4af37" style="transform-origin: 50px 50px;" />
+                    <line id="second-hand" x1="50" y1="60" x2="50" y2="8" stroke="#ffd700" stroke-width="0.4" style="transform-origin: 50px 50px;" />
+                </g>
+
+                <circle cx="50" cy="50" r="2" fill="#1a1a1a" stroke="#ffd700" stroke-width="0.5" />
+            </svg>
+        </div>
+
+        <div class="historical-title">
+            <span class="line"></span>
+            <h2>CHRONICLE OF 2026</h2>
+            <span class="line"></span>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<header>
+  <div class="brand">
+    <a href="index.html">
+        <img src="images/logo dark mode.png" alt="Logo dark mode" class="logo-dark">
+        <img src="images/logo light mode.png" alt="Logo Light Mode" class="logo-light">
+    </a>
+  </div>
+
+  <button class="menu-toggle" aria-label="Open menu">☰</button>
+
+  <nav id="main-nav" class="main-nav">
+    <a href="pages/about.html">ABOUT</a>
+    <a href="pages/projects.html">PROJECTS</a>
+    <a href="pages/blog.html">BLOG</a> 
+    <a href="pages/resume.html">RESUME</a>
+    <a href="pages/contact.html">CONTACT</a>
+    
+    <button id="theme-toggle" class="theme-btn-rect" aria-label="Toggle theme">
+        <span class="mode-text">NIGHT</span>
+    </button>
+  </nav>
+</header>
+
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="text-content">
+                    <div class="title-group">
+                        <h1 class="main-title">SATWINDER <span class="last-name">JEERH</span></h1>
+                        <h2 class="sub-title">Frontend Developer</h2>
+                    </div>
+                    
+                    <p class="descriptionHome">
+                        I build web applications and focus on writing code that's easy to maintain. Most of my day is spent solving logic puzzles and making sure things work as they should.
+                    </p>
+                    
+                    <div class="footer-meta">
+                        <p class="quote">"The best solutions are usually the simplest ones."</p>
+                        <a href="pages/about.html" class="cta-link">
+                            VIEW MY PORTFOLIO <span class="icon">➤</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="visual-content">
+                    <div class="image-wrapper">
+                        <img src="images/profile (2).png" alt="Developer profile" class="hero-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured-projects">
+        <div class="container">
+            <h3 class="section-label">Featured Work</h3>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="images/huancoffee.png" alt="Project One">
+                    </div>
+                    <div class="project-info">
+                        <span class="project-tag">Frontend</span>
+                        <h4>Huan Coffee</h4>
+                        <p>A calm and relaxing coffee shop website that promotes its business smoothly, creatively, and efficiently.</p>
+                        <a href="/pages/projects/project-huancafe.html" class="project-link">View Project <span>→</span></a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="images/standspeakact.jpg" alt="Project Two">
+                    </div>
+                    <div class="project-info">
+                        <span class="project-tag">UI/UX Design</span>
+                        <h4>StandSpeakAct</h4>
+                        <p>A blog website that focuses on spreading awareness about social issues that are currently happening.</p>
+                        <a href="/pages/projects/project-standspeakact.html" class="project-link">View Project <span>→</span></a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="images/parking system.jpg" alt="Project Three">
+                    </div>
+                    <div class="project-info">
+                        <span class="project-tag">Development</span>
+                        <h4>Smart Parking System</h4>
+                        <p>A full on web system that offers parking spots, and shows which ones are occupied, reserved, or vacant.</p>
+                        <a href="/pages/projects/project-parking-system.html" class="project-link">View Project <span>→</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<script src="javascript/navigation.js"></script>
+<script src="javascript/loading_screen.js"></script>
+<script src="javascript/index.js"></script>
+</body>
+
+</html>

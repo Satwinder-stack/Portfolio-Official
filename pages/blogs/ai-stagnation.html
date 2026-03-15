@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        (function() {
+            // 1. Check storage immediately
+            const hasSeenSplash = sessionStorage.getItem('hasSeenSplash');
+            const now = new Date();
+            const isDaytime = now.getHours() >= 6 && now.getHours() < 18;
+            const manualTheme = sessionStorage.getItem('selectedTheme');
+            const isManualControl = sessionStorage.getItem('themeManualOverride') === 'true';
+
+            // 2. Kill the splash immediately if already seen
+            if (hasSeenSplash) {
+                document.documentElement.classList.add('splash-hidden');
+            }
+
+            // 3. Set the theme (to prevent the flash you fixed earlier)
+            if (isManualControl) {
+                if (manualTheme === 'light-theme') document.documentElement.classList.add('light-theme');
+            } else if (isDaytime) {
+                document.documentElement.classList.add('light-theme');
+            }
+        })();
+
+        
+        // Run this immediately to prevent flickering
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // 1. Determine which theme to apply
+            // Priority: Saved Preference > System Preference > Default (Dark)
+            const initialTheme = savedTheme || (systemDark ? 'dark' : 'dark'); 
+
+            // 2. Apply it to the document
+            document.documentElement.setAttribute('data-theme', initialTheme);
+            if (initialTheme === 'light') {
+                document.body.classList.add('light-theme');
+            }
+        })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Peak AI: The Risk of Advancement vs. The Reality of Recession | Satwinder Jeerh</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@400..700&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../../css/loading_screen.css">
+    <link rel="stylesheet" href="../../css/splash_screen.css">
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/footer.css">
+    <link rel="stylesheet" href="../../css/blogs/blog-content.css"> 
+</head>
+<body class="blog-post-body">
+    
+
+
+
+<div id="page-transition-loader" class="transition-loader">
+    <div class="loader-content">
+        <p class="loader-text mode-text"></p>
+        <div class="loader-progress-container">
+            <div id="loader-bar" class="loader-progress-bar"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<div id="splash-screen">
+    <div class="amv-overlay"></div>
+
+        <div class="splash-content">
+            <div class="clock-artifact-wrapper">
+                <div class="magic-seal outer-seal"></div>
+                <div class="magic-seal inner-seal"></div>
+
+                <svg class="historical-clock" viewBox="0 0 100 100">
+                    <defs>
+                        <filter id="bronze-texture">
+                            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise"/>
+                            <feDiffuseLighting in="noise" lighting-color="#8b5a2b" surfaceScale="2">
+                                <feDistantLight azimuth="45" elevation="35" />
+                            </feDiffuseLighting>
+                        </filter>
+                        <filter id="amv-glow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="1.5" result="blur" />
+                            <feMerge>
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <circle cx="50" cy="50" r="48" fill="url(#bronze-texture)" stroke="#3d2b1f" stroke-width="1.5" />
+                    <circle cx="50" cy="50" r="44" fill="#0d0d0d" stroke="#c5a059" stroke-width="0.3" opacity="0.5" />
+
+                    <g class="runes" fill="#c5a059" filter="url(#amv-glow)" font-family="serif" font-weight="900" font-size="6">
+                        <text x="50" y="16" text-anchor="middle">XII</text>
+                        <text x="85" y="52" text-anchor="middle">III</text>
+                        <text x="50" y="88" text-anchor="middle">VI</text>
+                        <text x="15" y="52" text-anchor="middle">IX</text>
+                    </g>
+
+                    <g class="center-gear moving-part" id="gear-element">
+                        <circle cx="50" cy="50" r="8" fill="none" stroke="#c5a059" stroke-width="0.5" stroke-dasharray="2,1" />
+                        <path d="M50 42 L50 58 M42 50 L58 50" stroke="#c5a059" stroke-width="0.2" />
+                    </g>
+
+                    <g class="hands-group" filter="url(#amv-glow)">
+                        <path id="hour-hand" d="M50 50 L50 25 L53 45 L47 45 Z" fill="#fff" style="transform-origin: 50px 50px;" />
+                        <path id="minute-hand" d="M50 50 L50 15 L51.5 40 L48.5 40 Z" fill="#d4af37" style="transform-origin: 50px 50px;" />
+                        <line id="second-hand" x1="50" y1="60" x2="50" y2="8" stroke="#ffd700" stroke-width="0.4" style="transform-origin: 50px 50px;" />
+                    </g>
+
+                    <circle cx="50" cy="50" r="2" fill="#1a1a1a" stroke="#ffd700" stroke-width="0.5" />
+                </svg>
+            </div>
+
+            <div class="historical-title">
+                <span class="line"></span>
+                <h2>CHRONICLE OF 2026</h2>
+                <span class="line"></span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="progress-container">
+        <div class="progress-bar" id="myBar"></div>
+    </div>
+
+    <header>
+        <div class="brand">
+            <a href="../../index.html">
+                <img src="../../images/logo dark mode.png" alt="Logo dark mode" class="logo-dark">
+                <img src="../../images/logo light mode.png" alt="Logo Light Mode" class="logo-light">
+            </a>
+        </div>
+
+        <button class="menu-toggle" aria-label="Open menu">☰</button>
+
+        <nav id="main-nav">
+            <a href="../../pages/about.html">ABOUT</a>
+            <a href="../../pages/projects.html">PROJECTS</a>
+            <a href="../../pages/blog.html">BLOG</a>
+            <a href="../../pages/resume.html">RESUME</a>
+            <a href="../../pages/contact.html">CONTACT</a>
+            
+            <button id="theme-toggle" class="theme-btn-rect" aria-label="Toggle theme">
+                <span class="mode-text">NIGHT</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="post-wrapper">
+        <article class="post-content">
+            <div class="post-header-area">
+                <a href="../../pages/blog.html" class="back-btn">← Back to Journal</a>
+                <div class="post-meta">February 24, 2026 • 8 min read</div>
+                
+                <h1 class="post-title" id="typing-post-title">
+                    <span class="type-ghost">Peak AI: The Risk of Advancement vs. The Reality of Recession</span>
+                    <span class="type-layer"><span class="letters"></span><span class="cursor">|</span></span>
+                </h1>
+
+                <img src="../../images/blogs/glitchy digital face.png" alt="Glitchy digital face" class="hero-image">
+                <p class="image-credits">Images all rights reserved: To ultraimagehub.com</p>
+            </div>
+
+            <section class="post-body">
+                <p class="lead">We often fear an AI that grows exponentially until it surpasses us. But what if the greatest risk isn't its advancement, but its eventual cannibalization of the internet?</p>
+                
+                <h2>The Advancement Trap</h2>
+                <p>On the surface, AI seems to be advancing at breakneck speed. Every week, a new model claims higher benchmarks. However, we are reaching a "data wall." AI learns from human data—but as AI-generated content floods the web, AI is beginning to learn from itself. This creates a feedback loop that could lead to <strong>Model Collapse</strong>.</p>
+
+                <blockquote>
+                    "The greatest threat to AI isn't a lack of data; it's the pollution of its own source material." — Tech Horizon 2026
+                </blockquote>
+
+                <h3>Is it Removing Itself?</h3>
+                <p>When an AI is trained on AI-generated data, it loses the "human edge"—the errors, the nuances, and the authentic creativity that made the original models so effective. In a sense, the technology may be "removing itself" by diluting the very intelligence it aims to mimic. It becomes an echo of an echo.</p>
+
+                <pre><code>// Predicting the Model Decay
+const calculateDegradation = (generations) => {
+    let integrity = 1.0;
+    for (let i = 0; i < generations; i++) {
+        integrity *= 0.95; // 5% loss of nuance per generation;
+    };
+    return integrity.toFixed(2);
+};</code></pre>
+
+                <h3>The True Risk</h3>
+                <p>The real risk isn't just "The Terminator"—it's a world where we can no longer distinguish between human truth and synthetic noise. If AI "removes itself" by becoming a stagnant loop of its own previous outputs, we lose a tool for innovation and gain a tool for repetition.</p>
+
+                <h2>Conclusion</h2>
+                <p>As I've emphasized throughout this journal, the solution is always back in the hands of the human. We must provide the "heavy lifting" of original thought. If we rely on AI to generate our world, the world will eventually lose its color. We must remain the primary source of truth in an increasingly synthetic landscape.</p>
+            </section>
+            <nav class="post-navigation">
+                <div class="nav-box prev">
+                    <a href="human-dependency.html">
+                        <span class="nav-label">← BACK</span>
+                        <span class="nav-title">The Invisible Tether: Human Dependency on AI in All Careers</span>
+                    </a>
+                </div>
+                <div class="nav-box next">
+                    <a href="ai-vs-traditional.html">
+                        <span class="nav-label">NEXT →</span>
+                        <span class="nav-title">AI Assisted vs. Traditional Programming</span>
+                    </a>
+                </div>
+            </nav>
+            
+            <section class="comment-section">
+                <div class="container">
+                    <h3 class="section-title">Discussion</h3>
+                    <div class="giscus"></div>
+                </div>
+            </section>
+        </article>
+
+        <aside class="post-sidebar">
+            <div class="author-card" id="typing-author-card">
+                <div class="profile-img-container">
+                    <img src="../../images/profile1.png" alt="Satwinder Jeerh" class="author-img">
+                </div>
+                
+                <h4 class="typing-target">
+                    <span class="type-ghost">Satwinder Jeerh</span>
+                    <span class="type-layer"><span class="letters"></span><span class="cursor">|</span></span>
+                </h4>
+
+                <p class="author-sub typing-target">
+                    <span class="type-ghost">Front-End Developer</span>
+                    <span class="type-layer"><span class="letters"></span><span class="cursor">|</span></span>
+                </p>
+
+                <hr class="sidebar-hr">
+
+                <p class="author-bio typing-target">
+                    <span class="type-ghost">I've always believed that in every problem, there is a solution. We must always thrive to look for it ourselves—don't rely on someone else to do the heavy lifting for you.</span>
+                    <span class="type-layer"><span class="letters"></span><span class="cursor">|</span></span>
+                </p>
+            </div>
+            
+            <div class="related-topics">
+                <h5 class="sidebar-label">TAGS</h5>
+                <div class="tag-cloud">
+                    <span class="category-tag">#AI</span>
+                    <span class="category-tag">#Future</span>
+                    <span class="category-tag">#Philosophy</span>
+                    <span class="category-tag">#Development</span>
+                    <span class="category-tag">#Automation</span>
+                    <span class="category-tag">#SoftwareArchitecture</span>
+                    <span class="category-tag">#Ethics</span>
+                    <span class="category-tag">#Creativity</span>
+                    <span class="category-tag">#HumanAgency</span>
+                    <span class="category-tag">#TechTrends2026</span>
+                    <span class="category-tag">#UXDesign</span>
+                    <span class="category-tag">#Innovation</span>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+
+
+
+
+
+
+
+
+    <footer>
+    <div class="footer-container">
+        <div class="left">
+        <p class="copyright">© 2025 SATWINDER JEERH</p>
+        <p class="role">Front-End Developer</p>
+
+        <div class="tech-icons">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732212.png" alt="HTML5 logo" loading="lazy"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732190.png" alt="CSS3 logo" loading="lazy"/>
+            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968292.png" alt="JavaScript logo" loading="lazy"/>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/Satwinder-stack" target="_blank" rel="noopener" aria-label="GitHub">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733553.png" alt="GitHub logo" loading="lazy"/>
+            </a>
+            <a href="https://www.linkedin.com/in/satwinder-jeerh" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn logo" loading="lazy"/>
+            </a>
+            <a href="mailto:srjeerh09@gmail.com" aria-label="Email">
+            <img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" alt="Email logo" loading="lazy"/>
+            </a>
+        </div>
+        </div>
+
+        <div class="links" aria-label="Footer navigation">
+            <div>
+                <h4>ABOUT</h4>
+                <a href="../about.html">Meet the Developer</a>
+                <a href="../about.html">Badges</a>
+                <a href="../about.html">Certificates</a>
+                <a href="../about.html">Achievements</a>
+            </div>
+            <div>
+                <h4>PROJECTS</h4>
+                <a href="../projects.html">Project Video</a>
+                <a href="../projects.html">Project List</a>
+                <a href="../projects.html">Languages</a>
+                <a href="../projects.html">Collaborative Projects</a>
+            </div>
+            <div>
+                <h4>BLOGS</h4>
+                <a href="ai-stagnation.html">AI Stagnation</a>
+                <a href="ai-tool-or-human.html">AI: Tool or human</a>
+                <a href="ai-vs-traditional.html">AI vs Traditional</a>
+                <a href="human-dependency.html">Human Dependency</a>
+            </div>
+            <div>
+                <h4>RESUME</h4>
+                <a href="../resume.html">About me</a>
+                <a href="../resume.html">How to Contact</a>
+                <a href="../resume.html">Education</a>
+                <a href="../resume.html">Experience</a>
+            </div>
+            <div>
+                <h4>CONTACT</h4>
+                <a href="../contact.html">Phone No.</a>
+                <a href="../contact.html">Email</a>
+                <a href="../contact.html">Linkedin</a>
+                <a href="../contact.html">Testimonials</a>
+            </div>
+
+
+        </div>
+    </div>
+  </footer>
+
+    <script src="../../javascript/navigation.js"></script>
+    <script src="../../javascript/loading_screen.js"></script>
+    <script src="../../javascript/blogs/blogs.js"></script>
+
+    <script>
+        window.onscroll = function() { 
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            let bar = document.getElementById("myBar");
+            if (bar) {
+                bar.style.width = scrolled + "%";
+            };
+        };
+    </script>
+
+    <script src="https://giscus.app/client.js"
+        data-repo="Satwinder-stack/portfolio-comments"
+        data-repo-id="R_kgDORXqbcQ"
+        data-category="Announcements"
+        data-category-id="DIC_kwDORXqbcc4C3HDe"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+    </script>
+</body>
+</html>
