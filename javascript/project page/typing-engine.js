@@ -1,6 +1,7 @@
 /**
  * Global Typing Engine
  * Optimized for tech stacks, collab headings, and project titles
+ * Includes mobile bypass for screen widths < 787px
  */
 const TypeEngine = {
     run: (elements, duration, delayAfter = 3000) => {
@@ -13,17 +14,24 @@ const TypeEngine = {
             }
 
             const { fullText, iconHTML } = el.dataset;
+
+            // 2. MOBILE BYPASS: If screen < 787px, show static content and exit
+            if (window.innerWidth < 787) {
+                el.innerHTML = `${iconHTML} ${fullText}`;
+                if (el.typeTimeout) clearTimeout(el.typeTimeout);
+                return;
+            }
             
-            // 2. Clear existing timeouts and text to prevent layout "ghosting"
+            // 3. Clear existing timeouts and text for animation setup
             if (el.typeTimeout) clearTimeout(el.typeTimeout);
             el.textContent = ''; 
 
-            // 3. Determine specific classes based on tag
+            // 4. Determine specific classes based on tag
             const isCollab = el.tagName === 'H2';
             const isCard = el.tagName === 'H3';
             const prefix = isCollab ? 'collab' : (isCard ? 'project' : 'tech');
 
-            // 4. Inject the new structure (Using the dynamic prefix)
+            // 5. Inject the animation structure
             el.innerHTML = `
                 <div class="${prefix}-type-container">
                     <span class="${prefix}-ghost">${iconHTML} ${fullText}</span>
@@ -33,7 +41,7 @@ const TypeEngine = {
             const letterSpan = el.querySelector('.letters');
             const typingWrapper = el.querySelector(`.${prefix}-typing`);
             let charIndex = 0;
-            const speed = duration / fullText.length;
+            const speed = duration / (fullText.length || 1);
 
             const type = () => {
                 if (charIndex <= fullText.length) {

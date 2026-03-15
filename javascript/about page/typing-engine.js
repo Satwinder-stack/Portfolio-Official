@@ -1,9 +1,17 @@
 /**
  * CORE TYPING ENGINE
  * Handles smooth, frame-synced text rendering.
+ * Now includes a mobile bypass for widths < 787px.
  */
 window.TypeEngine = {
     run: function(el, text, speed, callback) {
+        // 1. MOBILE BYPASS: Stop immediately if screen is small
+        if (window.innerWidth < 787) {
+            // Ensure full text is visible on mobile without animation
+            if (el) el.textContent = text; 
+            return;
+        }
+
         if (!el || !text) return;
         
         // Setup internal spans if they don't exist

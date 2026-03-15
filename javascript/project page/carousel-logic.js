@@ -1,4 +1,7 @@
 const initCarousel = (previews, detailsPanels, thumbnails, carousel) => {
+    // Standard Mobile Check
+    const isMobile = window.innerWidth < 787;
+
     const selectProject = (index) => {
         previews.forEach((vid, i) => {
             const isActive = i === index;
@@ -20,25 +23,29 @@ const initCarousel = (previews, detailsPanels, thumbnails, carousel) => {
             carousel.scrollTo({ top: scrollPos, behavior: 'smooth' });
         }
 
-        // Trigger typing for the newly active panel
-        const activeProject = document.querySelector(`#project-${index + 1}`);
-        if (activeProject) {
-            TypeEngine.run(activeProject.querySelectorAll('.tech-icon'), 1500);
+        // --- MOBILE OPTIMIZED TYPING TRIGGER ---
+        // Only trigger the expensive query and animation logic if NOT on mobile
+        if (!isMobile) {
+            const activeProject = document.querySelector(`#project-${index + 1}`);
+            if (activeProject) {
+                // Ensure the global TypeEngine exists before calling
+                window.TypeEngine?.run(activeProject.querySelectorAll('.tech-icon'), 1500);
+            }
         }
     };
 
-    // Drag Logic
+    // Drag Logic (Remains unchanged as it's already mobile-friendly with touch events)
     let isDown = false, startY, scrollTop, isDragging = false;
     const startDragging = (e) => {
         isDown = true; isDragging = false;
         carousel.classList.add('active-dragging');
-        startY = (e.pageY || e.touches[0].pageY) - carousel.offsetTop;
+        startY = (e.pageY || (e.touches ? e.touches[0].pageY : 0)) - carousel.offsetTop;
         scrollTop = carousel.scrollTop;
     };
     const stopDragging = () => { isDown = false; carousel.classList.remove('active-dragging'); };
     const move = (e) => {
         if (!isDown) return;
-        const y = (e.pageY || e.touches[0].pageY) - carousel.offsetTop;
+        const y = (e.pageY || (e.touches ? e.touches[0].pageY : 0)) - carousel.offsetTop;
         const walk = (y - startY) * 1.5;
         if (Math.abs(walk) > 5) isDragging = true;
         carousel.scrollTop = scrollTop - walk;
@@ -47,6 +54,8 @@ const initCarousel = (previews, detailsPanels, thumbnails, carousel) => {
     carousel.addEventListener('mousedown', startDragging);
     carousel.addEventListener('mousemove', (e) => { e.preventDefault(); move(e); });
     ['mouseleave', 'mouseup'].forEach(ev => carousel.addEventListener(ev, stopDragging));
+    
+    // Use passive: true for better scroll performance on mobile
     carousel.addEventListener('touchstart', startDragging, { passive: true });
     carousel.addEventListener('touchmove', move, { passive: true });
     carousel.addEventListener('touchend', stopDragging);
