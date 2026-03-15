@@ -1,3 +1,8 @@
+/**
+ * PERFORMANCE LOADING ENGINE
+ * Manages page transitions with scroll-lock and index-skipping logic.
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('page-transition-loader');
     const bar = document.getElementById('loader-bar');
@@ -5,61 +10,81 @@ document.addEventListener('DOMContentLoaded', () => {
     const html = document.documentElement;
     const body = document.body;
     
-    // 1. CHECK LOCATION: Are we on the index page?
-    const isIndex = window.location.pathname.endsWith('index.html') || 
-                    window.location.pathname === '/' || 
-                    window.location.pathname.endsWith('/');
+    // 1. PATH CHECK
+    const path = window.location.pathname;
+    const isIndex = path.endsWith('index.html') || path === '/' || path.endsWith('/');
 
-    if (isIndex) {
-        // ABSOLUTE SKIP: Kill the loader immediately for index.html
-        if (loader) loader.style.display = 'none';
+    /**
+     * Helper: Safely release scroll-lock
+     */
+    const unlockScroll = () => {
+        html.classList.remove('loading-active');
+        body.classList.remove('loading-active');
+    };
+
+    /**
+     * Helper: Force Content Visibility
+     */
+    const revealContent = () => {
         if (wrapper) {
             wrapper.style.visibility = 'visible';
             wrapper.style.opacity = '1';
             wrapper.classList.add('content-ready');
         }
-        return; // Stop the rest of the script from running
+    };
+
+    // 2. IMMEDIATE INDEX SKIP
+    if (isIndex) {
+        if (loader) loader.style.display = 'none';
+        revealContent();
+        unlockScroll();
+        return; 
     }
 
-    // 2. LOADING LOGIC: (Only runs for About, Projects, Contact, etc.)
+    // 3. ENTERING PAGE LOGIC (Non-Index)
     if (loader && bar) {
-        // 1. LOCK SCROLLING IMMEDIATELY
+        // Lock scroll immediately
         html.classList.add('loading-active');
         body.classList.add('loading-active');
 
-        // Start bar animation
-        setTimeout(() => { bar.style.width = '100%'; }, 50);
+        // Start progress bar
+        requestAnimationFrame(() => {
+            bar.style.width = '100%';
+        });
 
-        // 2. THE UNLOCK (Matches your 2.5s timer)
+        // Main Timer: Finish Loading
         setTimeout(() => {
-            // Fade out loader
             loader.style.opacity = '0';
             
-            // 3. RELEASE SCROLLING
-            // We wait for the fade animation to finish before showing the scrollbar
+            // Cleanup after fade-out transition (matches 0.6s CSS transition)
             setTimeout(() => {
                 loader.style.display = 'none';
-                html.classList.remove('loading-active');
-                body.classList.remove('loading-active');
+                unlockScroll();
+                revealContent();
             }, 600); 
         }, 2500); 
     }
 
-    // 3. EXIT LOGIC: Keeps transitions smooth when leaving any page
+    // 4. EXIT LOGIC (Universal Link Handling)
     document.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
+            
+            // Standard Navigation Filter
             if (href && !href.startsWith('http') && !href.startsWith('#') && !this.target) {
                 e.preventDefault();
                 
-                // If the destination is index.html, we don't show the loader bar
-                const goingToIndex = href.endsWith('index.html') || href === '../index.html' || href === '/';
+                const goingToIndex = href.endsWith('index.html') || href.includes('index.html') || href === '/';
 
+                // Fade out current content
                 if (wrapper) wrapper.style.opacity = '0';
 
+                // Show loader if NOT going home
                 if (!goingToIndex && loader) {
                     loader.style.display = 'flex';
-                    setTimeout(() => { loader.style.opacity = '1'; }, 10);
+                    requestAnimationFrame(() => {
+                        loader.style.opacity = '1';
+                    });
                 }
 
                 setTimeout(() => { window.location.href = href; }, 500); 
@@ -68,9 +93,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Fix for Safari back-button cache
-window.onpageshow = function(event) {
+// Safari Back-Button Cache Fix
+window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
         window.location.reload();
     }
-};
+});

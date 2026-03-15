@@ -638,6 +638,19 @@ h1 {
 }
 
 
+/* Apply this to tech, collab, and project containers */
+[class*="-type-container"] {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+}
+
+[class*="-ghost"], [class*="-typing"] {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Optional: adds space between icon and text */
+}
+
 
 
 

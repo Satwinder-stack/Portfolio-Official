@@ -1,50 +1,53 @@
-const contactForm = document.getElementById('contact-form');
-const resultText = document.getElementById('form-result');
+document.addEventListener('DOMContentLoaded', () => {
+    const contactForm = document.getElementById('contact-form');
+    const resultText = document.getElementById('form-result');
 
-contactForm.addEventListener('submit', function(e) {
-    e.preventDefault(); 
-    
-    const formData = new FormData(contactForm);
-    const object = Object.fromEntries(formData);
-    const json = JSON.stringify(object);
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // UI Feedback
+            resultText.style.display = "block";
+            resultText.innerHTML = "Processing...";
+            resultText.style.color = "var(--text-muted)";
 
-    resultText.style.display = "block";
-    resultText.innerHTML = "Processing...";
-    resultText.style.color = "var(--text-muted)";
+            const formData = new FormData(contactForm);
+            const object = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(object)
+                });
 
-    fetch('https://api.web3forms.com/submit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: json
-        })
-        .then(async (response) => {
-            if (response.status == 200) {
-                resultText.innerHTML = "✔ Message sent successfully!";
-                resultText.style.color = "var(--primary)";
-                contactForm.reset(); // Clears the inputs
-            } else {
-                resultText.innerHTML = "❌ Something went wrong.";
+                if (response.status === 200) {
+                    resultText.innerHTML = "✔ Message sent successfully!";
+                    resultText.style.color = "var(--primary)";
+                    contactForm.reset();
+                } else {
+                    throw new Error();
+                }
+            } catch (error) {
+                resultText.innerHTML = "❌ Error. Please try again.";
                 resultText.style.color = "#ff4d4d";
+            } finally {
+                // Auto-hide using a single timer
+                setTimeout(() => {
+                    resultText.style.display = "none";
+                }, 5000);
             }
-        })
-        .catch(error => {
-            resultText.innerHTML = "❌ Network error. Please try again.";
-            resultText.style.color = "#ff4d4d";
-        })
-        .finally(() => {
-            // Hide the message after 5 seconds so the UI stays clean
-            setTimeout(() => {
-                resultText.style.display = "none";
-            }, 5000);
         });
+    }
 });
 
-
-
-
+/**
+ * TESTIMONIAL ENGINE
+ * Optimized to prevent image flicker
+ */
 const testimonials = [
     {
       photo: "../images/mark.jpg",
@@ -61,17 +64,22 @@ const testimonials = [
       quoteContact: "Clean code, great communication, fast delivery. Exactly what every frontend developer wants in a collaborator. Highly recommend!",
       author: "Redge Galang | Web Developer"
     }
-  ];
+];
 
-  function showTestimonial(index) {
-    document.getElementById("current-photo").src = testimonials[index].photo;
-    document.getElementById("current-quote").textContent = `"${testimonials[index].quoteContact}"`;
-    document.getElementById("current-author").textContent = "— " + testimonials[index].author;
-
+function showTestimonial(index) {
+    const photoEl = document.getElementById("current-photo");
+    const quoteEl = document.getElementById("current-quote");
+    const authorEl = document.getElementById("current-author");
     const btns = document.querySelectorAll(".thumb-btn");
+
+    if (!photoEl || !quoteEl) return;
+
+    // Use opacity for smoother transition if your CSS supports it
+    photoEl.src = testimonials[index].photo;
+    quoteEl.textContent = `"${testimonials[index].quoteContact}"`;
+    authorEl.textContent = "— " + testimonials[index].author;
+
     btns.forEach((btn, i) => {
-      btn.classList.toggle("active", i === index);
+        btn.classList.toggle("active", i === index);
     });
-  }
-
-
+}

@@ -1,6 +1,12 @@
+/**
+ * PROJECT TYPING ENGINE
+ * Optimized for mobile performance using requestAnimationFrame 
+ * and minimized layout thrashing.
+ */
+
 function setupDetailsTyping() {
     const descriptions = document.querySelectorAll('.description');
-    const TOTAL_DURATION = 2000; // 2 seconds for both sections to finish
+    const TOTAL_DURATION = 2000;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -11,8 +17,8 @@ function setupDetailsTyping() {
                     startDetailsLoop(el, TOTAL_DURATION);
                 }
             } else {
-                // Reset on scroll away
-                if (el.typeTimeout) clearTimeout(el.typeTimeout);
+                // Cancel active animation frame
+                if (el.typeFrame) cancelAnimationFrame(el.typeFrame);
                 const letterSpan = el.querySelector('.letters');
                 if (letterSpan) letterSpan.textContent = '';
                 el.dataset.isTyping = "false";
@@ -21,17 +27,16 @@ function setupDetailsTyping() {
     }, { threshold: 0.1 });
 
     descriptions.forEach(p => {
-        // Check if we've already wrapped this element
         if (p.querySelector('.description-ghost')) return; 
 
         const currentHTML = p.innerHTML.trim();
         p.dataset.fullHTML = currentHTML;
         
-        // Clear and wrap
+        // Using a more performance-friendly grid setup
         p.innerHTML = `
-            <div class="description-type-container" style="display: grid;">
-                <span class="description-ghost">${currentHTML}</span>
-                <span class="description-typing"><span class="letters"></span></span>
+            <div class="description-type-container" style="display: grid; grid-template-columns: 1fr;">
+                <span class="description-ghost" style="grid-area: 1/1; visibility: hidden;">${currentHTML}</span>
+                <span class="description-typing" style="grid-area: 1/1;"><span class="letters"></span></span>
             </div>
         `;
         observer.observe(p);
@@ -44,33 +49,40 @@ function startDetailsLoop(el, duration) {
     const letterSpan = el.querySelector('.letters');
     const typingWrapper = el.querySelector('.description-typing');
     
-    // 1. Create an array of "tokens" (either a character or a full HTML tag like <br>)
+    // Tokenize HTML tags vs characters
     const tokens = fullHTML.match(/(<[^>]+>|[^<])/g) || [];
-    let tokenIndex = 0;
-    
-    // 2. Speed = Total duration / number of tokens (not just characters)
     const speed = duration / tokens.length;
+    
+    let tokenIndex = 0;
+    let lastTime = 0;
 
-    function run() {
-        if (tokenIndex < tokens.length) {
-            // Add the next token (char or tag)
-            const currentOutput = tokens.slice(0, tokenIndex + 1).join('');
-            letterSpan.innerHTML = currentOutput;
-            
-            tokenIndex++;
-            typingWrapper.classList.add('description-cursor');
-            el.typeTimeout = setTimeout(run, speed);
-        } else {
-            // Typing finished
-            typingWrapper.classList.remove('description-cursor');
+    typingWrapper.classList.add('description-cursor');
+
+    function run(currentTime) {
+        if (el.dataset.isTyping !== "true") return;
+
+        if (currentTime - lastTime >= speed) {
+            if (tokenIndex < tokens.length) {
+                // Optimized: build the string incrementally
+                let currentOutput = "";
+                for(let j = 0; j <= tokenIndex; j++) {
+                    currentOutput += tokens[j];
+                }
+                
+                letterSpan.innerHTML = currentOutput;
+                tokenIndex++;
+                lastTime = currentTime;
+            } else {
+                typingWrapper.classList.remove('description-cursor');
+                return;
+            }
         }
+        el.typeFrame = requestAnimationFrame(run);
     }
-    run();
+    
+    el.typeFrame = requestAnimationFrame(run);
 }
 
-
-
 document.addEventListener('DOMContentLoaded', () => {
-    // ... other logic
     setupDetailsTyping();
 });
