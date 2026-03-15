@@ -98,7 +98,7 @@
 	--body-bg0: url('../images/midnightBackground.png');
 	--body-bg1: url('../images/midnightBackgroundDigitalizedDesktop.png');
     --body-bg2: url('../images/midnightBackgroundDigitalizedTablet.png');
-    --body-bg3: url('../images/midnightBackgroundDigitalizedMobile.png');
+    --body-bg3: url('../images/aboutMobileNight.png');
 	--body-bg4: url('../images/midnightBackground.png');
 	--body-bg5: url('../images/morningDarken2.png');
 	--body-bg6: url('../images/midnightBackgroundDigitalizedDesktop.png');
@@ -180,7 +180,7 @@
 	--body-bg0: url('../images/morningBackgroundDigitalizedMobileNewEnhanced.png');
 	--body-bg1: url('../images/morningBackgroundDigitalizedDesktop.png');
     --body-bg2: url('../images/morningBackgroundDigitalizedTablet.png');
-    --body-bg3: url('../images/morningBackgroundDigitalizedMobile.png');;
+    --body-bg3: url('../images/aboutMobileMorning.png');;
 	--body-bg4: url('../images/morningDarken.png');
 	--body-bg5: url('../images/morningDarken2.png');
 	--body-bg6: url('../images/morningDarkenWithImageTablet.png');
@@ -2309,7 +2309,7 @@ html {
 	}
 
 	.hero-container{
-		background-image: var(--body-bg4);
+		background-image: var(--body-bg3);
 	}
 
 	.name{
