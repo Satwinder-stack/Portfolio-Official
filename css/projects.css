@@ -620,8 +620,8 @@ h1 {
     scrollbar-width: none;  /* Hides scrollbar Firefox */
 }
 
-.tech-stack2 .tech-icon{
-    padding-right: 2em;
+.tech-stack2 .tech-icon i{
+    white-space: nowrap !important;
 }
 
 .tech-stack-wrapper {
@@ -635,6 +635,7 @@ h1 {
     margin: 0 auto;
     text-align: center;
     justify-content: center;
+    white-space: nowrap !important;     /* Standard nowrap rule */
 }
 
 
@@ -680,7 +681,7 @@ h1 {
 
 
 .tech-icon {
-    display: inline-flex;
+    display: inline-flex !important; /* Use flex for better control */
     align-items: center;
     position: relative;
     padding: 8px 14px;
@@ -692,6 +693,8 @@ h1 {
     transition: all 0.3s;
     background: var(--card);
     border: 1px solid var(--border);
+    white-space: nowrap !important;     /* Ensures the icon and text stay together */
+    flex-shrink: 0;          /* Prevents the icons from squishing */
 }
 
 .tech-icon.active{
@@ -1464,7 +1467,8 @@ a:link:active, a:visited:active {
     }
 
     .tech-stack2 .tech-icon{
-        padding-right: 2em;
+        white-space: nowrap;
+
     }
     
     
@@ -1962,6 +1966,10 @@ a:link:active, a:visited:active {
     .tech-icon{
         background: var(--card);
         border: 1px solid var(--border);
+    }
+
+    .tech-stack2 .tech-icon{
+        white-space: nowrap;
     }
 
     .action-row a:hover {

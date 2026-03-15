@@ -16,19 +16,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const secondWrapper = document.querySelector('.second-tech-stack-wrapper');
     const collabSection = document.querySelector('.collaboration');
     
-    // Lightbox Selectors
-    const lightbox = document.getElementById('projectLightbox');
-    const lightboxImg = document.getElementById('lightboxImg');
+    // Lightbox Selectors (Hyphenated to match your HTML)
+    const lightbox = document.getElementById('project-lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
     const closeBtn = document.querySelector('.close-lightbox');
+    const lbLeft = document.querySelector('.nav-arrow-lightbox.left');
+    const lbRight = document.querySelector('.nav-arrow-lightbox.right');
 
-    // MOBILE CHECK
+    // MOBILE CHECK (787px threshold)
     const isMobile = window.innerWidth < 787;
 
     // 3. Initialize Modules
     const { selectProject } = initCarousel(previews, detailsPanels, thumbnails, carousel);
-    const { activateTech } = initTechFilter(languages, leftArrow, rightArrow, projectCards, secondWrapper, selectProject);
+    const { activateTech } = initTechFilter(languages, leftArrow, rightArrow, projectCards, selectProject);
 
-    // 4. Global Intersections & Initial Typing (Bypass for Mobile)
+    if (thumbnails.length > 0) {
+        selectProject(0); 
+    }
+
+    // 4. Global Intersections & Typing (Bypass for Mobile)
     if (!isMobile) {
         TypeEngine.run(document.querySelectorAll('.project-content h3'), 1500);
         if (detailsPanels[0]) {
@@ -48,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.2 });
     if (collabSection) collabObserver.observe(collabSection);
 
-    // Sticky & Force-Hide logic
+    // Sticky Logic (Desktop Only)
     if (!isMobile) {
         const stickyObserver = new IntersectionObserver(([entry]) => {
             secondWrapper?.classList.toggle('is-stuck', !entry.isIntersecting && entry.boundingClientRect.top < 0);
@@ -61,10 +67,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (collabSection) hideObserver.observe(collabSection);
     }
 
-    // --- 5. LIGHTBOX LOGIC ---
-    const openLightbox = (src) => {
-        if (!lightbox || !lightboxImg) return;
-        lightboxImg.src = src;
+    // --- 5. LIGHTBOX & GALLERY LOGIC ---
+    let currentGallery = [];
+    let currentIndex = 0;
+
+    const openLightbox = (galleryStr) => {
+        if (!galleryStr || !lightbox || !lightboxImg) return;
+        
+        // Parse data-gallery string into clean array
+        currentGallery = galleryStr.split(',').map(s => s.trim()).filter(s => s !== "");
+        if (currentGallery.length === 0) return;
+
+        currentIndex = 0;
+        lightboxImg.src = currentGallery[currentIndex];
         lightbox.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     };
@@ -76,25 +91,55 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lightboxImg) lightboxImg.style.transform = 'scale(1)';
     };
 
-    // Attach click events to images for popup
-    previews.forEach(media => {
-        // If it's an image, allow popup on click
-        if (media.tagName === 'IMG') {
-            media.style.cursor = 'zoom-in';
-            media.addEventListener('click', () => openLightbox(media.src));
+    const navigate = (dir) => {
+        if (currentGallery.length <= 1) return;
+        currentIndex = (currentIndex + dir + currentGallery.length) % currentGallery.length;
+        lightboxImg.src = currentGallery[currentIndex];
+    };
+
+    // Attach click to Project Cards
+    projectCards.forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', () => {
+            const gallery = card.getAttribute('data-gallery');
+            openLightbox(gallery);
+        });
+    });
+
+    // Navigation Controls
+    if (closeBtn) closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+    if (lbLeft) lbLeft.addEventListener('click', (e) => { e.stopPropagation(); navigate(-1); });
+    if (lbRight) lbRight.addEventListener('click', (e) => { e.stopPropagation(); navigate(1); });
+
+    // MOBILE: Split-Screen Tap Navigation
+    lightbox?.addEventListener('click', (e) => {
+        // Prevent trigger if clicking UI buttons
+        if (e.target.closest('.close-lightbox') || e.target.closest('.nav-arrow-lightbox')) return;
+
+        if (window.innerWidth < 787) {
+            // Mobile Tap Logic
+            const clickX = e.clientX;
+            if (clickX < window.innerWidth / 2) {
+                navigate(-1); // Left 50%
+            } else {
+                navigate(1);  // Right 50%
+            }
+        } else if (e.target === lightbox || e.target.closest('.lightbox-content')) {
+            // Desktop: Close on background click
+            closeLightbox();
         }
     });
 
-    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
-    lightbox?.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => { 
+        if (lightbox?.style.display === 'flex') {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') navigate(1);
+            if (e.key === 'ArrowLeft') navigate(-1);
+        }
+    });
 
     // 6. Start Up Logic
-    if (thumbnails.length > 0 && !isMobile) {
-        selectProject(0);
-    }
-    
-    if (languages.length > 0 && !isMobile) {
-        activateTech(0, false);
-    }
+    if (thumbnails.length > 0 && !isMobile) selectProject(0);
+    if (languages.length > 0 && !isMobile) activateTech(0, false);
 });

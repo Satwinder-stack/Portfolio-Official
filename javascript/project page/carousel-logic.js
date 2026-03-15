@@ -1,8 +1,8 @@
 const initCarousel = (previews, detailsPanels, thumbnails, carousel) => {
-    // Standard Mobile Check
     const isMobile = window.innerWidth < 787;
 
     const selectProject = (index) => {
+        // 1. Toggle Preview Media (Videos/Images)
         previews.forEach((vid, i) => {
             const isActive = i === index;
             vid.classList.toggle('active', isActive);
@@ -14,35 +14,73 @@ const initCarousel = (previews, detailsPanels, thumbnails, carousel) => {
             }
         });
 
-        detailsPanels.forEach((panel, i) => panel.classList.toggle('active', i === index));
+        // 2. Toggle Project Details Panels (Fixes "Showing All at Once")
+        detailsPanels.forEach((panel, i) => {
+            const isActive = i === index;
+            panel.classList.toggle('active', isActive);
+            
+            // Explicitly force display state to prevent CSS leaks
+            if (isActive) {
+                panel.style.display = 'block'; 
+            } else {
+                panel.style.display = 'none';
+            }
+        });
+
+        // 3. Toggle Thumbnails
         thumbnails.forEach((t, i) => t.classList.toggle('active', i === index));
 
+        // 4. Center active thumbnail in the sidebar
         if (thumbnails[index] && carousel) {
             const thumb = thumbnails[index];
             const scrollPos = (thumb.offsetTop - carousel.offsetTop) - (carousel.clientHeight / 2) + (thumb.clientHeight / 2);
             carousel.scrollTo({ top: scrollPos, behavior: 'smooth' });
         }
 
-        // --- MOBILE OPTIMIZED TYPING TRIGGER ---
-        // Only trigger the expensive query and animation logic if NOT on mobile
-        if (!isMobile) {
-            const activeProject = document.querySelector(`#project-${index + 1}`);
-            if (activeProject) {
-                // Ensure the global TypeEngine exists before calling
-                window.TypeEngine?.run(activeProject.querySelectorAll('.tech-icon'), 1500);
+        // 5. Tech Icon Restoration & Nowrap
+        const activeProject = document.querySelector(`#project-${index + 1}`);
+        if (activeProject) {
+            const techIcons = activeProject.querySelectorAll('.tech-icon');
+            
+            techIcons.forEach(icon => {
+                // Kill existing animation loops
+                if (icon.typeFrame) cancelAnimationFrame(icon.typeFrame);
+                if (icon.typeTimeout) clearTimeout(icon.typeTimeout);
+                
+                // Force No-Wrap to prevent flickering/jumping
+                icon.style.whiteSpace = 'nowrap';
+                icon.style.display = 'inline-block';
+
+                // Restore static content from dataset immediately
+                if (icon.dataset.fullText) {
+                    const iconHTML = icon.dataset.iconHTML || '';
+                    icon.innerHTML = `${iconHTML} ${icon.dataset.fullText}`;
+                }
+            });
+
+            // Trigger TypeEngine only on Desktop
+            if (!isMobile && window.TypeEngine) {
+                window.TypeEngine.run(techIcons, 1500);
             }
         }
     };
 
-    // Drag Logic (Remains unchanged as it's already mobile-friendly with touch events)
+    // --- Drag Logic ---
     let isDown = false, startY, scrollTop, isDragging = false;
+    
     const startDragging = (e) => {
-        isDown = true; isDragging = false;
+        isDown = true; 
+        isDragging = false;
         carousel.classList.add('active-dragging');
         startY = (e.pageY || (e.touches ? e.touches[0].pageY : 0)) - carousel.offsetTop;
         scrollTop = carousel.scrollTop;
     };
-    const stopDragging = () => { isDown = false; carousel.classList.remove('active-dragging'); };
+
+    const stopDragging = () => { 
+        isDown = false; 
+        carousel.classList.remove('active-dragging'); 
+    };
+
     const move = (e) => {
         if (!isDown) return;
         const y = (e.pageY || (e.touches ? e.touches[0].pageY : 0)) - carousel.offsetTop;
@@ -55,13 +93,15 @@ const initCarousel = (previews, detailsPanels, thumbnails, carousel) => {
     carousel.addEventListener('mousemove', (e) => { e.preventDefault(); move(e); });
     ['mouseleave', 'mouseup'].forEach(ev => carousel.addEventListener(ev, stopDragging));
     
-    // Use passive: true for better scroll performance on mobile
     carousel.addEventListener('touchstart', startDragging, { passive: true });
     carousel.addEventListener('touchmove', move, { passive: true });
     carousel.addEventListener('touchend', stopDragging);
 
+    // Initial event listener for thumbnail clicks
     thumbnails.forEach((thumb, i) => {
-        thumb.addEventListener('click', () => { if (!isDragging) selectProject(i); });
+        thumb.addEventListener('click', () => { 
+            if (!isDragging) selectProject(i); 
+        });
     });
 
     return { selectProject };
