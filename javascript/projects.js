@@ -54,8 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.2 });
     if (collabSection) collabObserver.observe(collabSection);
 
-    // Sticky Logic (Desktop Only)
-    if (!isMobile) {
         const stickyObserver = new IntersectionObserver(([entry]) => {
             secondWrapper?.classList.toggle('is-stuck', !entry.isIntersecting && entry.boundingClientRect.top < 0);
         }, { threshold: 0 });
@@ -65,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
             secondWrapper?.classList.toggle('force-hide', entry.isIntersecting);
         }, { threshold: 0, rootMargin: "0px 0px -10% 0px" });
         if (collabSection) hideObserver.observe(collabSection);
-    }
 
     // --- 5. LIGHTBOX & GALLERY LOGIC ---
     let currentGallery = [];
