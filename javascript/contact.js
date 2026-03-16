@@ -56,17 +56,17 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 const testimonials = [
     {
-      photo: "../images/mark.jpg",
+      photo: "../images/mark.webp",
       quoteContact: "Watching Satwinder code is kind of mesmerizing. They make the impossible seem simple, and they're always ready to help when I’m stuck.",
       author: "Mark De Jesus | Project Manager"
     },
     {
-      photo: "../images/karl.jpg",
+      photo: "../images/karl.webp",
       quoteContact: "Satwinder has an incredible eye for UI/UX. The interfaces he builds are both beautiful and highly functional. Pleasure to work with!",
       author: "Karl Guiao | UI Designer"
     },
     {
-      photo: "../images/redge.jpg",
+      photo: "../images/redge.webp",
       quoteContact: "Clean code, great communication, fast delivery. Exactly what every frontend developer wants in a collaborator. Highly recommend!",
       author: "Redge Galang | Web Developer"
     }
