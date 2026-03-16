@@ -1,6 +1,7 @@
 /**
  * PERFORMANCE LOADING ENGINE
  * Manages page transitions with scroll-lock and index-skipping logic.
+ * Standardized for mobile bypass at <= 768px.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,21 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const html = document.documentElement;
     const body = document.body;
     
-    // 1. PATH CHECK
+    // 1. PATH & DEVICE CHECK
     const path = window.location.pathname;
     const isIndex = path.endsWith('index.html') || path === '/' || path.endsWith('/');
+    const isMobile = window.innerWidth <= 768; // Standardized Breakpoint
 
-    /**
-     * Helper: Safely release scroll-lock
-     */
     const unlockScroll = () => {
         html.classList.remove('loading-active');
         body.classList.remove('loading-active');
     };
 
-    /**
-     * Helper: Force Content Visibility
-     */
     const revealContent = () => {
         if (wrapper) {
             wrapper.style.visibility = 'visible';
@@ -33,30 +29,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // 2. IMMEDIATE INDEX SKIP
-    if (isIndex) {
+    // 2. IMMEDIATE BYPASS (Index or Mobile)
+    // If we are on home OR on a mobile device, kill the loader immediately.
+    if (isIndex || isMobile) {
         if (loader) loader.style.display = 'none';
         revealContent();
         unlockScroll();
-        return; 
+        
+        // If mobile, we exit the setup entirely to keep the CPU lean
+        if (isMobile) return; 
     }
 
-    // 3. ENTERING PAGE LOGIC (Non-Index)
+    // 3. ENTERING PAGE LOGIC (Desktop Non-Index)
     if (loader && bar) {
-        // Lock scroll immediately
         html.classList.add('loading-active');
         body.classList.add('loading-active');
 
-        // Start progress bar
         requestAnimationFrame(() => {
             bar.style.width = '100%';
         });
 
-        // Main Timer: Finish Loading
         setTimeout(() => {
             loader.style.opacity = '0';
             
-            // Cleanup after fade-out transition (matches 0.6s CSS transition)
             setTimeout(() => {
                 loader.style.display = 'none';
                 unlockScroll();
@@ -72,11 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Standard Navigation Filter
             if (href && !href.startsWith('http') && !href.startsWith('#') && !this.target) {
-                e.preventDefault();
                 
                 const goingToIndex = href.endsWith('index.html') || href.includes('index.html') || href === '/';
 
-                // Fade out current content
+                // MOBILE BYPASS: Don't hijack links on mobile, let the browser handle it
+                if (isMobile) return;
+
+                e.preventDefault();
                 if (wrapper) wrapper.style.opacity = '0';
 
                 // Show loader if NOT going home

@@ -6,7 +6,7 @@
 
 function setupDetailsTyping() {
     const descriptions = document.querySelectorAll('.description');
-    const TOTAL_DURATION = 2000;
+    const TOTAL_DURATION = 1000;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {

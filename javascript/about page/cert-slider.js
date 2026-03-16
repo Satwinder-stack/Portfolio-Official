@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!wrapper || slides.length === 0) return;
 
     let index = 0;
+    const isMobile = window.innerWidth < 768;
 
     // Helper to move slider using GPU acceleration
     const updateSlider = () => {
@@ -33,9 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (target === '_blank') {
             window.open(url, '_blank', 'noopener,noreferrer');
         } else {
-            // Trigger your global loading screen logic here
-            document.body.style.opacity = '0';
-            setTimeout(() => { window.location.href = url; }, 500);
+            // DISABLED LOADING SCREEN FOR MOBILE
+            if (isMobile) {
+                window.location.href = url;
+            } else {
+                // Keep desktop fade-out logic
+                document.body.style.opacity = '0';
+                setTimeout(() => { window.location.href = url; }, 500);
+            }
         }
     });
 });

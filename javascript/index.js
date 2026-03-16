@@ -1,12 +1,16 @@
 /**
- * SMART HEADER ENGINE (Optimized)
- * Optimized for mobile with RAF throttling and state-locking.
+ * SMART HEADER ENGINE
+ * Handles header visibility with high-performance RAF throttling.
+ * Optimized for mobile stability at <= 768px.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     const header = document.querySelector('header');
     if (!header) return;
 
+    // 1. ENVIRONMENT CONSTANTS
+    const BREAKPOINT = 768;
+    const isMobile = window.innerWidth <= BREAKPOINT;
     const isIndex = window.location.pathname.endsWith('index.html') || 
                     window.location.pathname.endsWith('/') || 
                     window.location.pathname === '';
@@ -14,39 +18,45 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastScrollY = window.scrollY;
     let ticking = false;
 
-    // 1. Initial State Setup
+    // 2. INITIAL STATE & MOBILE BYPASS
+    // On Desktop index, we hide the header and jump 60px for a clean entrance.
+    // On Mobile, we keep it visible and static to prevent address bar flickering.
     if (isIndex) {
-        header.classList.add('header-hidden');
-        
-        // Use requestAnimationFrame instead of setTimeout for the initial jump
-        requestAnimationFrame(() => {
-            window.scrollTo({
-                top: 60,
-                behavior: 'instant'
+        if (!isMobile) {
+            header.classList.add('header-hidden');
+            
+            requestAnimationFrame(() => {
+                window.scrollTo({
+                    top: 60,
+                    behavior: 'instant'
+                });
             });
-        });
+        } else {
+            header.classList.add('header-visible');
+            header.classList.remove('header-hidden');
+        }
     }
 
     /**
-     * Update Header State
-     * Logic is separated from the event listener for performance
+     * CORE HEADER LOGIC
+     * Manages state classes based on scroll direction.
      */
     function updateHeader() {
         const currentScrollY = window.scrollY;
 
-        // A. At the top: Show
+        // A. At the top of the page
         if (currentScrollY <= 50) {
             header.classList.remove('header-hidden');
             header.classList.add('header-visible');
         } 
-        // B. Scrolling DOWN: Hide
+        // B. Scrolling DOWN: Hide Header
         else if (currentScrollY > lastScrollY) {
             if (!header.classList.contains('header-hidden')) {
                 header.classList.add('header-hidden');
                 header.classList.remove('header-visible');
             }
         } 
-        // C. Scrolling UP: Show
+        // C. Scrolling UP: Reveal Header
         else {
             if (header.classList.contains('header-hidden')) {
                 header.classList.remove('header-hidden');
@@ -55,14 +65,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         lastScrollY = currentScrollY;
-        ticking = false; // Release the lock
+        ticking = false; // Release lock for next frame
     }
 
-    // 2. Throttled Scroll Listener
+    // 3. EVENT LISTENERS
+    // Uses passive: true to improve scroll performance on mobile
     window.addEventListener('scroll', () => {
         if (!ticking) {
             window.requestAnimationFrame(updateHeader);
-            ticking = true; // Lock the execution until the next frame
+            ticking = true; 
+        }
+    }, { passive: true });
+
+    // 4. RESIZE WATCHER
+    // If user rotates phone or resizes browser, ensure state stays sane
+    window.addEventListener('resize', () => {
+        if (window.innerWidth <= BREAKPOINT) {
+            header.classList.remove('header-hidden');
+            header.classList.add('header-visible');
         }
     }, { passive: true });
 });

@@ -1,12 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. CACHE ALL ELEMENTS (Do this once, not inside functions)
+    // 1. CACHE ALL ELEMENTS
     const nameEl = document.getElementById('typing-name');
     const roleEl = document.getElementById('typing-role');
     const contactBar = document.querySelector('.contact-bar');
+    const BREAKPOINT = 768;
+    const isMobile = window.innerWidth <= BREAKPOINT;
 
     if (!nameEl || !roleEl) return;
 
-    // Cache nested elements to avoid repeated lookups
     const nameGhost = nameEl.querySelector('.type-ghost');
     const roleGhost = roleEl.querySelector('.type-ghost');
     
@@ -17,16 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * OPTIMIZED TYPING ENGINE
-     * Uses a frame-based approach for smoother mobile rendering
      */
     function typeElement(element, text, speed, callback) {
         const lettersSpan = element.querySelector('.letters');
         const cursor = element.querySelector('.cursor');
+        
+        // MOBILE BYPASS: Instant injection
+        if (isMobile) {
+            if (lettersSpan) lettersSpan.textContent = text;
+            if (cursor) cursor.style.display = 'none';
+            if (callback) callback();
+            return;
+        }
+
         let i = 0;
         let lastTime = 0;
 
         function type(currentTime) {
-            // Only update if enough time (speed) has passed
             if (currentTime - lastTime >= speed) {
                 if (i <= text.length) {
                     lettersSpan.textContent = text.substring(0, i);
@@ -35,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     if (cursor) cursor.style.display = 'none';
                     if (callback) callback();
-                    return; // End animation
+                    return;
                 }
             }
             requestAnimationFrame(type);
@@ -44,14 +52,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 2. SEQUENCED ANIMATION
-    // We keep your 3s delay to account for the site loader
-    setTimeout(() => {
-        typeElement(nameEl, nameText, 60, () => {
-            typeElement(roleEl, roleText, 40, () => {
+    // Mobile: Instant visibility. Desktop: Keep the cinematic 3s delay.
+    if (isMobile) {
+        typeElement(nameEl, nameText, 0, () => {
+            typeElement(roleEl, roleText, 0, () => {
                 if (contactBar) contactBar.classList.add('visible');
             });
         });
-    }, 3000);
+    } else {
+        setTimeout(() => {
+            typeElement(nameEl, nameText, 60, () => {
+                typeElement(roleEl, roleText, 40, () => {
+                    if (contactBar) contactBar.classList.add('visible');
+                });
+            });
+        }, 3000);
+    }
 
     /**
      * OPTIMIZED DOWNLOAD MODAL
@@ -62,22 +78,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (downloadBtn && modal && fill) {
         downloadBtn.addEventListener('click', () => {
-            // Reset state
             fill.style.cssText = 'transition: none; width: 0%;';
             modal.classList.add('active');
 
-            // Using double RAF to ensure the reset is rendered before the animation starts
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    fill.style.transition = 'width 5s linear';
+                    // Mobile: Slightly faster progress bar (3s instead of 5s)
+                    const duration = isMobile ? '3s' : '5s';
+                    fill.style.transition = `width ${duration} linear`;
                     fill.style.width = '100%';
                 });
             });
 
-            // Close modal after completion
             setTimeout(() => {
                 modal.classList.remove('active');
-            }, 5000);
-        }, { passive: true }); // Improved scroll performance
+            }, isMobile ? 3000 : 5000);
+        }, { passive: true });
     }
 });

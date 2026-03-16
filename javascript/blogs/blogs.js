@@ -1,12 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. CACHE ALL ELEMENTS (Absolute Strategy)
+    // 0. MOBILE CHECK (Disable typing/delays < 768px)
+    const isMobile = window.innerWidth < 768;
+
+    // 1. CACHE ALL ELEMENTS
     const titleContainer = document.getElementById('typing-post-title');
     const heroImage = document.querySelector('.hero-image');
     const authorTargets = document.querySelectorAll('#typing-author-card .typing-target');
 
     /**
      * UNIFIED TYPING ENGINE
-     * Uses a non-blocking frame-based approach
      */
     function typeEffect(element, speed, callback) {
         if (!element) return;
@@ -18,9 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!ghost || !lettersSpan) return;
 
         const text = ghost.textContent.trim();
+
+        // MOBILE BYPASS: Instant reveal
+        if (isMobile) {
+            lettersSpan.textContent = text;
+            if (cursor) cursor.style.display = 'none';
+            if (callback) callback();
+            return;
+        }
+
+        // DESKTOP LOGIC
         let i = 0;
         let lastTime = 0;
-
         if (cursor) cursor.style.display = 'inline-block';
 
         function type(currentTime) {
@@ -32,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     if (cursor) cursor.style.display = 'none';
                     if (callback) callback();
-                    return; // End frame loop
+                    return; 
                 }
             }
             requestAnimationFrame(type);
@@ -41,21 +52,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 2. POST TITLE SEQUENCE
-    // We delay the start slightly to ensure the site loader has faded
     if (titleContainer) {
+        // Remove delay on mobile (0ms vs 1000ms)
         setTimeout(() => {
             typeEffect(titleContainer, 40, () => {
                 if (heroImage) {
-                    // Using requestAnimationFrame to ensure smooth fade-in
                     requestAnimationFrame(() => {
                         heroImage.classList.add('visible');
                     });
                 }
             });
-        }, 1000); 
+        }, isMobile ? 0 : 1000); 
     }
 
-    // 3. AUTHOR CARD SEQUENCE (Recursive Chaining)
+    // 3. AUTHOR CARD SEQUENCE
     function runAuthorSequence(index = 0) {
         if (index >= authorTargets.length) return;
 
@@ -63,13 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const speed = target.classList.contains('author-bio') ? 25 : 50;
 
         typeEffect(target, speed, () => {
-            // Start next section immediately after current one finishes
             runAuthorSequence(index + 1);
         });
     }
 
-    // Start Author sequence after a small buffer
+    // Start Author sequence immediately on mobile
     setTimeout(() => {
         runAuthorSequence();
-    }, 1500);
+    }, isMobile ? 0 : 1500);
 });

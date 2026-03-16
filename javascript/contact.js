@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contact-form');
     const resultText = document.getElementById('form-result');
+    const isMobile = window.innerWidth < 768;
 
     if (contactForm) {
         contactForm.addEventListener('submit', async function(e) {
@@ -42,11 +43,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // DEADLINE OPTIMIZATION: Pre-load testimonial images to prevent mobile flicker
+    testimonials.forEach(t => {
+        const img = new Image();
+        img.src = t.photo;
+    });
 });
 
 /**
  * TESTIMONIAL ENGINE
- * Optimized to prevent image flicker
  */
 const testimonials = [
     {
@@ -74,7 +80,7 @@ function showTestimonial(index) {
 
     if (!photoEl || !quoteEl) return;
 
-    // Use opacity for smoother transition if your CSS supports it
+    // Use a quick fade if you have the CSS, otherwise this remains instant
     photoEl.src = testimonials[index].photo;
     quoteEl.textContent = `"${testimonials[index].quoteContact}"`;
     authorEl.textContent = "— " + testimonials[index].author;

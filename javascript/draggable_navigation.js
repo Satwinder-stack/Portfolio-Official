@@ -1,7 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize dragging
+    // MOBILE BYPASS FOR DRAGGING
+    const isMobile = window.innerWidth < 768;
+
+    // 1. Initialize dragging ONLY for sidebar on all screens, 
+    // but keep mobile-bottom-nav static on phones to avoid touch conflicts.
     makeDirectDrag('draggable-sidebar', '.drag-handle');
-    if (window.innerWidth > 767) {
+    
+    if (!isMobile) {
         makeDirectDrag('mobile-bottom-nav', null);
     }
 
@@ -56,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             state.rafId = requestAnimationFrame(updatePosition);
 
-            // Using capture: true for smoother event intake
             document.addEventListener('mousemove', pointerMove, { passive: false });
             document.addEventListener('mouseup', pointerUp);
             document.addEventListener('touchmove', pointerMove, { passive: false });
@@ -93,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const navLinks = document.querySelectorAll('.sidebar-link, .mobile-pill');
     
-    // 1. Smooth Scroll
+    // Smooth Scroll Logic
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -101,7 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetElement = document.querySelector(targetId);
             
             if (targetElement) {
-                const headerOffset = 140; 
+                // Adjust this offset based on your mobile header height
+                const headerOffset = isMobile ? 80 : 140; 
                 const yPosition = targetElement.getBoundingClientRect().top + window.scrollY - headerOffset;
 
                 window.scrollTo({ top: yPosition, behavior: 'smooth' });
@@ -109,10 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. Performance-First Scroll Spy using IntersectionObserver
-    // This replaces the expensive window.addEventListener('scroll')
+    // IntersectionObserver Scroll Spy
     const observerOptions = {
-        rootMargin: '-140px 0px -70% 0px',
+        rootMargin: isMobile ? '-80px 0px -70% 0px' : '-140px 0px -70% 0px',
         threshold: 0
     };
 
