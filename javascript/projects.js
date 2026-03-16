@@ -102,17 +102,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (collabSection) collabObserver.observe(collabSection);
 
     // Sticky Tech Stack Logic (Only relevant for Desktop/Tablet)
-    if (!isMobile) {
-        const stickyObserver = new IntersectionObserver(([entry]) => {
-            secondWrapper?.classList.toggle('is-stuck', !entry.isIntersecting && entry.boundingClientRect.top < 0);
-        }, { threshold: 0 });
-        if (trigger) stickyObserver.observe(trigger);
+    const stickyObserver = new IntersectionObserver(([entry]) => {
+        secondWrapper?.classList.toggle('is-stuck', !entry.isIntersecting && entry.boundingClientRect.top < 0);
+    }, { threshold: 0 });
+    if (trigger) stickyObserver.observe(trigger);
 
-        const hideObserver = new IntersectionObserver(([entry]) => {
-            secondWrapper?.classList.toggle('force-hide', entry.isIntersecting);
-        }, { threshold: 0, rootMargin: "0px 0px -10% 0px" });
-        if (collabSection) hideObserver.observe(collabSection);
-    }
+    const hideObserver = new IntersectionObserver(([entry]) => {
+        secondWrapper?.classList.toggle('force-hide', entry.isIntersecting);
+    }, { threshold: 0, rootMargin: "0px 0px -10% 0px" });
+    if (collabSection) hideObserver.observe(collabSection);
 
     // --- 5. LIGHTBOX & GALLERY LOGIC ---
     let currentGallery = [];
@@ -177,6 +175,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 6. Final Kickoff
-    if (thumbnails.length > 0 && !isMobile) selectProject(0);
+    if (thumbnails.length > 0) {
+        // If mobile, we select the project BUT pass a flag or handle the pause
+        selectProject(0); 
+        
+        if (isMobile) {
+            // Re-enforce the pause immediately after selection
+            previews.forEach(v => {
+                v.pause();
+                v.currentTime = 0;
+            });
+        }
+    }
+
     if (languages.length > 0 && !isMobile) activateTech(0, false);
 });

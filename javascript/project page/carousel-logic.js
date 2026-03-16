@@ -2,12 +2,20 @@ const initCarousel = (previews, detailsPanels, thumbnails, carousel) => {
     const isMobile = window.innerWidth < 768;
 
     const selectProject = (index) => {
+        // Use the isMobile variable defined at the top of initCarousel
         // 1. Toggle Preview Media (Videos/Images)
         previews.forEach((vid, i) => {
             const isActive = i === index;
             vid.classList.toggle('active', isActive);
+            
             if (isActive) {
-                vid.play().catch(() => {});
+                // ONLY play if NOT on mobile
+                if (!isMobile) {
+                    vid.play().catch(() => {});
+                } else {
+                    // Force pause on mobile just to be safe
+                    vid.pause();
+                }
             } else {
                 vid.pause();
                 vid.currentTime = 0;
