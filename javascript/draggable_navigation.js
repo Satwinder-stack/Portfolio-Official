@@ -1,9 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // MOBILE BYPASS FOR DRAGGING
     const isMobile = window.innerWidth < 768;
 
-    // 1. Initialize dragging ONLY for sidebar on all screens, 
-    // but keep mobile-bottom-nav static on phones to avoid touch conflicts.
     makeDirectDrag('draggable-sidebar', '.drag-handle');
     
     if (!isMobile) {
@@ -32,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let newLeft = state.currentX - state.offsetX;
             let newTop = state.currentY - state.offsetY;
 
-            // Constrain to viewport
             const w = container.offsetWidth;
             const h = container.offsetHeight;
             newLeft = Math.max(8, Math.min(window.innerWidth - w - 8, newLeft));
@@ -92,12 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
         handle.addEventListener('touchstart', pointerDown, { passive: false });
     }
 
-    /**
-     * OPTIMIZED NAVIGATION & SCROLL SPY
-     */
     const navLinks = document.querySelectorAll('.sidebar-link, .mobile-pill');
     
-    // Smooth Scroll Logic
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -105,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetElement = document.querySelector(targetId);
             
             if (targetElement) {
-                // Adjust this offset based on your mobile header height
                 const headerOffset = isMobile ? 80 : 140; 
                 const yPosition = targetElement.getBoundingClientRect().top + window.scrollY - headerOffset;
 
@@ -114,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // IntersectionObserver Scroll Spy
     const observerOptions = {
         rootMargin: isMobile ? '-80px 0px -70% 0px' : '-140px 0px -70% 0px',
         threshold: 0

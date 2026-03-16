@@ -16,14 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameText = nameGhost.textContent;
     const roleText = roleGhost.textContent;
 
-    /**
-     * OPTIMIZED TYPING ENGINE
-     */
     function typeElement(element, text, speed, callback) {
         const lettersSpan = element.querySelector('.letters');
         const cursor = element.querySelector('.cursor');
         
-        // MOBILE BYPASS: Instant injection
         if (isMobile) {
             if (lettersSpan) lettersSpan.textContent = text;
             if (cursor) cursor.style.display = 'none';
@@ -51,8 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(type);
     }
 
-    // 2. SEQUENCED ANIMATION
-    // Mobile: Instant visibility. Desktop: Keep the cinematic 3s delay.
     if (isMobile) {
         typeElement(nameEl, nameText, 0, () => {
             typeElement(roleEl, roleText, 0, () => {
@@ -69,9 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    /**
-     * OPTIMIZED DOWNLOAD MODAL
-     */
     const downloadBtn = document.querySelector('.download-btn');
     const modal = document.getElementById('download-modal');
     const fill = document.querySelector('.loading-bar-fill');
@@ -83,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    // Mobile: Slightly faster progress bar (3s instead of 5s)
                     const duration = isMobile ? '3s' : '5s';
                     fill.style.transition = `width ${duration} linear`;
                     fill.style.width = '100%';

@@ -1,4 +1,3 @@
-// --- 5. LIGHTBOX LOGIC ---
 const lightbox = document.getElementById('project-lightbox'); 
 const lightboxImg = document.getElementById('lightbox-img');   
 const closeBtn = document.querySelector('.close-lightbox');
@@ -36,8 +35,6 @@ const prevImg = (e) => {
     lightboxImg.src = currentGallery[currentIndex];
 };
 
-// 1. Gather all images into a gallery array and attach listeners
-// Assuming 'previews' is globally available or passed in from your main script
 if (typeof previews !== 'undefined') {
     previews.forEach((media, index) => {
         if (media.tagName === 'IMG') {
@@ -50,7 +47,6 @@ if (typeof previews !== 'undefined') {
     });
 }
 
-// 2. Event Listeners for Navigation
 if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
 if (leftArrowLB) leftArrowLB.addEventListener('click', prevImg);
 if (rightArrowLB) rightArrowLB.addEventListener('click', nextImg);

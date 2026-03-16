@@ -1,13 +1,8 @@
-/**
- * PROJECT TYPING ENGINE
- * Standardized for mobile bypass at <= 768px.
- */
 
 function setupDetailsTyping() {
     const descriptions = document.querySelectorAll('.description');
     const TOTAL_DURATION = 1000;
     
-    // Standardized Breakpoint
     const isMobile = window.innerWidth <= 768;
 
     const observer = new IntersectionObserver((entries) => {
@@ -32,7 +27,6 @@ function setupDetailsTyping() {
 
         const currentHTML = p.innerHTML.trim();
         
-        // MOBILE BYPASS: If mobile, skip the container setup and the observer
         if (isMobile) {
             p.innerHTML = currentHTML;
             return; 
@@ -40,7 +34,6 @@ function setupDetailsTyping() {
 
         p.dataset.fullHTML = currentHTML;
         
-        // DESKTOP: Use the grid setup for typing
         p.innerHTML = `
             <div class="description-type-container" style="display: grid; grid-template-columns: 1fr;">
                 <span class="description-ghost" style="grid-area: 1/1; visibility: hidden;">${currentHTML}</span>
@@ -52,7 +45,6 @@ function setupDetailsTyping() {
 }
 
 function startDetailsLoop(el, duration) {
-    // This loop only runs on Desktop because of the check in setupDetailsTyping
     el.dataset.isTyping = "true";
     const fullHTML = el.dataset.fullHTML;
     const letterSpan = el.querySelector('.letters');

@@ -1,15 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 0. MOBILE CHECK (Disable typing/delays < 768px)
     const isMobile = window.innerWidth < 768;
 
-    // 1. CACHE ALL ELEMENTS
     const titleContainer = document.getElementById('typing-post-title');
     const heroImage = document.querySelector('.hero-image');
     const authorTargets = document.querySelectorAll('#typing-author-card .typing-target');
 
-    /**
-     * UNIFIED TYPING ENGINE
-     */
     function typeEffect(element, speed, callback) {
         if (!element) return;
         
@@ -21,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const text = ghost.textContent.trim();
 
-        // MOBILE BYPASS: Instant reveal
         if (isMobile) {
             lettersSpan.textContent = text;
             if (cursor) cursor.style.display = 'none';
@@ -29,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // DESKTOP LOGIC
         let i = 0;
         let lastTime = 0;
         if (cursor) cursor.style.display = 'inline-block';
@@ -51,9 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(type);
     }
 
-    // 2. POST TITLE SEQUENCE
     if (titleContainer) {
-        // Remove delay on mobile (0ms vs 1000ms)
         setTimeout(() => {
             typeEffect(titleContainer, 40, () => {
                 if (heroImage) {
@@ -65,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, isMobile ? 0 : 1000); 
     }
 
-    // 3. AUTHOR CARD SEQUENCE
     function runAuthorSequence(index = 0) {
         if (index >= authorTargets.length) return;
 
@@ -77,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Start Author sequence immediately on mobile
     setTimeout(() => {
         runAuthorSequence();
     }, isMobile ? 0 : 1500);

@@ -1,23 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 0. MOBILE CHECK
     const isMobile = window.innerWidth < 768;
 
-    // Ensure TypeEngine is loaded
     if (!window.TypeEngine) return;
 
-    // 1. HERO ANIMATIONS (Top of Page)
     const nameH1 = document.querySelector('.hero-text h1');
     const roleH2 = document.querySelector('.hero-text h2');
 
     if (nameH1) {
         if (isMobile) {
-            // MOBILE: Bypass typing, show instantly
             nameH1.textContent = nameH1.dataset.fullText || nameH1.textContent.trim();
             if (roleH2) {
                 roleH2.textContent = roleH2.dataset.fullText || roleH2.textContent.trim();
             }
         } else {
-            // DESKTOP: Start typing logic
             window.TypeEngine.run(nameH1, nameH1.textContent.trim(), 80, () => {
                 if (roleH2) {
                     window.TypeEngine.run(roleH2, roleH2.textContent.trim(), 120);
@@ -26,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 2. SCROLL-BASED TYPING (Headers & Cards)
     const scrollTargets = document.querySelectorAll('.accomplished h1, .skill-header h1, .card h1, .description');
 
     const observer = new IntersectionObserver((entries) => {
@@ -34,9 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const el = entry.target;
             
             if (entry.isIntersecting) {
-                // MOBILE BYPASS
                 if (isMobile) {
-                    el.style.opacity = "1"; // Ensure it's visible
+                    el.style.opacity = "1"; 
                     return; 
                 }
 
@@ -56,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
             } else if (!isMobile && !el.classList.contains('description')) {
-                // Reset only on Desktop
                 el.dataset.isTyping = "false";
                 const letters = el.querySelector('.letters');
                 if (letters) letters.textContent = '';
@@ -66,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     scrollTargets.forEach(target => observer.observe(target));
 
-    // 3. FADE-IN EFFECTS (Reveal/Rise) - Keeping this for Mobile as it's not a typing animation
     const fxObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             entry.target.classList.toggle('fx-visible', entry.isIntersecting);

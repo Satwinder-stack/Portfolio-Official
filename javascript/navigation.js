@@ -1,7 +1,3 @@
-/**
- * NAVIGATION & THEME ENGINE
- * Global handler for menus, themes, splash screens, and parallax.
- */
 
 document.addEventListener('DOMContentLoaded', () => {
     const BREAKPOINT = 768;
@@ -83,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 3. SPLASH SCREEN (Mobile Bypass & Clock Animation)
     const initAMVSplash = () => {
         const splash = document.getElementById('splash-screen');
         if (!splash) return;
@@ -118,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!startTime) startTime = timestamp;
             const progress = Math.min((timestamp - startTime) / duration, 1);
             
-            // Quintic Out Easing
             const ease = 1 - Math.pow(1 - progress, 5);
             const currentSeconds = targetTotalSecs * ease;
 
@@ -151,9 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (header) header.classList.add('animate-trigger');
 });
 
-/**
- * 4. PERFORMANCE PARALLAX (Desktop Only)
- */
+
 if (window.innerWidth > 768) {
     let tX = 0, tY = 0, cX = 0, cY = 0;
     const bodyRef = document.body;

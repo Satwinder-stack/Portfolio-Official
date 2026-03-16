@@ -6,12 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let index = 0;
     const isMobile = window.innerWidth < 768;
 
-    // Helper to move slider using GPU acceleration
     const updateSlider = () => {
         wrapper.style.transform = `translate3d(-${index * 100}%, 0, 0)`;
     };
 
-    // Attach to your navigation buttons if they exist
     window.nextCert = () => {
         index = (index + 1) % slides.length;
         updateSlider();
@@ -22,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSlider();
     };
 
-    // Handle the "Transport" click logic from earlier
     wrapper.addEventListener('click', (e) => {
         const clickedImg = e.target.closest('.slide');
         if (!clickedImg) return;
@@ -34,11 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (target === '_blank') {
             window.open(url, '_blank', 'noopener,noreferrer');
         } else {
-            // DISABLED LOADING SCREEN FOR MOBILE
             if (isMobile) {
                 window.location.href = url;
             } else {
-                // Keep desktop fade-out logic
                 document.body.style.opacity = '0';
                 setTimeout(() => { window.location.href = url; }, 500);
             }

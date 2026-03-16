@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // UI Feedback
             resultText.style.display = "block";
             resultText.innerHTML = "Processing...";
             resultText.style.color = "var(--text-muted)";
@@ -36,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 resultText.innerHTML = "❌ Error. Please try again.";
                 resultText.style.color = "#ff4d4d";
             } finally {
-                // Auto-hide using a single timer
                 setTimeout(() => {
                     resultText.style.display = "none";
                 }, 5000);
@@ -44,16 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // DEADLINE OPTIMIZATION: Pre-load testimonial images to prevent mobile flicker
     testimonials.forEach(t => {
         const img = new Image();
         img.src = t.photo;
     });
 });
 
-/**
- * TESTIMONIAL ENGINE
- */
 const testimonials = [
     {
       photo: "../images/mark.webp",
@@ -80,7 +74,6 @@ function showTestimonial(index) {
 
     if (!photoEl || !quoteEl) return;
 
-    // Use a quick fade if you have the CSS, otherwise this remains instant
     photoEl.src = testimonials[index].photo;
     quoteEl.textContent = `"${testimonials[index].quoteContact}"`;
     authorEl.textContent = "— " + testimonials[index].author;

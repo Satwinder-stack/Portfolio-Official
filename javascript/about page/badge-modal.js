@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const openModal = (card) => {
         const img = card.querySelector("img").src;
-        // Data attributes for content
         document.getElementById("modalImg").src = img;
         document.getElementById("modalTitle").innerText = card.dataset.title || '';
         document.getElementById("modalPurpose").innerText = card.dataset.purpose || '';
@@ -17,12 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("modalLink").href = card.dataset.link || '#';
 
         modal.classList.add('open');
-        document.body.style.overflow = 'hidden'; // Lock background scroll
+        document.body.style.overflow = 'hidden'; 
     };
 
     const closeModal = () => {
         modal.classList.remove('open');
-        document.body.style.overflow = ''; // Unlock scroll
+        document.body.style.overflow = '';
     };
 
     cards.forEach(card => card.addEventListener("click", () => openModal(card)));

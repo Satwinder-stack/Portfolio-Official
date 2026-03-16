@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 0. MOBILE CHECK
     const isMobile = window.innerWidth < 768;
 
-    // 1. Safety check for the global TypeEngine
     if (!window.TypeEngine) return;
 
     const blogElements = document.querySelectorAll('.blog-card h3, .blog-card p');
@@ -13,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const el = entry.target;
             
             if (entry.isIntersecting) {
-                // MOBILE BYPASS: Don't trigger observer logic on mobile
                 if (isMobile) return;
 
                 if (el.dataset.isTyping !== "true") {
@@ -27,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
             } else if (!isMobile) {
-                // Reset only on Desktop
                 if (el.typeFrame) cancelAnimationFrame(el.typeFrame);
                 el.dataset.isTyping = "false";
                 const letters = el.querySelector('.letters');
@@ -36,16 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, { threshold: 0.1 });
 
-    // 2. INITIALIZE ELEMENTS
     blogElements.forEach(el => {
         const text = el.textContent.trim();
         el.dataset.fullText = text;
         
         if (isMobile) {
-            // MOBILE: Set static content immediately
             el.innerHTML = text;
         } else {
-            // DESKTOP: Setup structure for typing animation
             el.innerHTML = `
                 <div class="blog-type-container" style="display: grid;">
                     <span class="blog-ghost" style="grid-area: 1/1; visibility: hidden;">${text}</span>

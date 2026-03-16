@@ -3,7 +3,6 @@ const initTechFilter = (languages, leftArrow, rightArrow, projectCards, selectPr
     const isMobile = window.innerWidth < 768;
 
     const triggerWave = (idx) => {
-        // MOBILE BYPASS: Don't run the pulse/wave sequence on mobile
         if (isMobile) return;
 
         const allIcons = Array.from(languages).map(img => img.closest('.tech-icon'));
@@ -23,10 +22,8 @@ const initTechFilter = (languages, leftArrow, rightArrow, projectCards, selectPr
         
         const selectedTech = languages[idx].dataset.tech.toLowerCase();
         
-        // Only trigger wave if not mobile
         if (shouldWave) triggerWave(idx);
 
-        // 1. PROJECT SYNC & SCROLL LOGIC
         if (shouldWave) {
             const projects = document.querySelectorAll('.project-details');
             const destination = document.getElementById('here');
@@ -41,7 +38,6 @@ const initTechFilter = (languages, leftArrow, rightArrow, projectCards, selectPr
             }
 
             if (destination) {
-                // On mobile, we use a 0ms delay for instant feedback
                 setTimeout(() => {
                     destination.scrollIntoView({ 
                         behavior: 'smooth', 
@@ -51,7 +47,6 @@ const initTechFilter = (languages, leftArrow, rightArrow, projectCards, selectPr
             }
         }
 
-        // 2. STYLING THE TECH BAR
         languages.forEach((img, i) => {
             const parent = img.closest('.tech-icon');
             if (!parent) return;
@@ -70,7 +65,6 @@ const initTechFilter = (languages, leftArrow, rightArrow, projectCards, selectPr
             }
         });
 
-        // 3. FILTERING PROJECT CARDS
         projectCards.forEach(card => {
             const tags = (card.dataset.tags || '').toLowerCase().split(/\s+/);
             const isMatch = tags.includes(selectedTech);
@@ -87,7 +81,6 @@ const initTechFilter = (languages, leftArrow, rightArrow, projectCards, selectPr
         currentTechIndex = idx;
     };
 
-    // --- 4. EVENT LISTENERS ---
     leftArrow?.addEventListener('click', (e) => {
         e.stopPropagation();
         currentTechIndex = (currentTechIndex - 1 + languages.length) % languages.length;
