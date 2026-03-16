@@ -1,24 +1,23 @@
 const initCarousel = (previews, detailsPanels, thumbnails, carousel) => {
-    const isMobile = window.innerWidth < 768;
+    // Consistency: Using 768 to match your projects.js BREAKPOINT
+    const isMobile = window.innerWidth <= 768;
 
     const selectProject = (index) => {
-        // Use the isMobile variable defined at the top of initCarousel
         // 1. Toggle Preview Media (Videos/Images)
         previews.forEach((vid, i) => {
             const isActive = i === index;
             vid.classList.toggle('active', isActive);
             
             if (isActive) {
-                // ONLY play if NOT on mobile
+                // Performance: Only autoplay on desktop to save mobile data/CPU
                 if (!isMobile) {
                     vid.play().catch(() => {});
                 } else {
-                    // Force pause on mobile just to be safe
                     vid.pause();
                 }
             } else {
                 vid.pause();
-                vid.currentTime = 0;
+                vid.currentTime = 0; // Reset inactive videos to first frame
             }
         });
 
@@ -26,49 +25,46 @@ const initCarousel = (previews, detailsPanels, thumbnails, carousel) => {
         detailsPanels.forEach((panel, i) => {
             const isActive = i === index;
             panel.classList.toggle('active', isActive);
-            
-            if (isActive) {
-                panel.style.display = 'block'; 
-            } else {
-                panel.style.display = 'none';
-            }
+            panel.style.display = isActive ? 'block' : 'none';
         });
 
         // 3. Toggle Thumbnails
         thumbnails.forEach((t, i) => t.classList.toggle('active', i === index));
 
-        // 4. Center active thumbnail
+        // 4. Center active thumbnail (Optimized for Lighthouse)
         if (thumbnails[index] && carousel) {
             const thumb = thumbnails[index];
-            const scrollPos = (thumb.offsetTop - carousel.offsetTop) - (carousel.clientHeight / 2) + (thumb.clientHeight / 2);
-            carousel.scrollTo({ top: scrollPos, behavior: 'smooth' });
+            // requestAnimationFrame prevents "Layout Thrashing/Forced Reflow"
+            requestAnimationFrame(() => {
+                const scrollPos = (thumb.offsetTop - carousel.offsetTop) - (carousel.clientHeight / 2) + (thumb.clientHeight / 2);
+                carousel.scrollTo({ top: scrollPos, behavior: 'smooth' });
+            });
         }
 
-        // 5. Tech Icon Restoration
+        // 5. Tech Icon Restoration & Animation Management
         const activeProject = document.querySelector(`#project-${index + 1}`);
         if (activeProject) {
             const techIcons = activeProject.querySelectorAll('.tech-icon');
             
             techIcons.forEach(icon => {
-                // Kill existing animation loops
+                // Cleanup: Kill existing animations to prevent memory leaks
                 if (icon.typeFrame) cancelAnimationFrame(icon.typeFrame);
                 if (icon.typeTimeout) clearTimeout(icon.typeTimeout);
                 
                 icon.style.whiteSpace = 'nowrap';
                 icon.style.display = 'inline-block';
 
-                // Restore static content immediately
+                // Instant Restore: Ensure content is present before animation starts
                 if (icon.dataset.fullText) {
                     const iconHTML = icon.dataset.iconHTML || '';
                     icon.innerHTML = `${iconHTML} ${icon.dataset.fullText}`;
                 }
             });
 
-            // DISABLE TYPING ON MOBILE
+            // Conditional Execution: Typing effects are skipped on mobile for performance
             if (!isMobile && window.TypeEngine) {
                 window.TypeEngine.run(techIcons, 1500);
             } else {
-                // On mobile, ensure they are fully visible immediately
                 techIcons.forEach(icon => {
                     icon.style.opacity = '1';
                     icon.style.visibility = 'visible';
@@ -77,7 +73,7 @@ const initCarousel = (previews, detailsPanels, thumbnails, carousel) => {
         }
     };
 
-    // --- Drag Logic (Unchanged as it's purely functional) ---
+    // --- Interaction Logic (Drag & Click) ---
     let isDown = false, startY, scrollTop, isDragging = false;
     
     const startDragging = (e) => {
@@ -101,6 +97,7 @@ const initCarousel = (previews, detailsPanels, thumbnails, carousel) => {
         carousel.scrollTop = scrollTop - walk;
     };
 
+    // Event Listeners
     carousel.addEventListener('mousedown', startDragging);
     carousel.addEventListener('mousemove', (e) => { e.preventDefault(); move(e); });
     ['mouseleave', 'mouseup'].forEach(ev => carousel.addEventListener(ev, stopDragging));
