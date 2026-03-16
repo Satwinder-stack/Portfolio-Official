@@ -1,12 +1,14 @@
 /**
  * PROJECT TYPING ENGINE
- * Optimized for mobile performance using requestAnimationFrame 
- * and minimized layout thrashing.
+ * Standardized for mobile bypass at <= 768px.
  */
 
 function setupDetailsTyping() {
     const descriptions = document.querySelectorAll('.description');
     const TOTAL_DURATION = 1000;
+    
+    // Standardized Breakpoint
+    const isMobile = window.innerWidth <= 768;
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -17,7 +19,6 @@ function setupDetailsTyping() {
                     startDetailsLoop(el, TOTAL_DURATION);
                 }
             } else {
-                // Cancel active animation frame
                 if (el.typeFrame) cancelAnimationFrame(el.typeFrame);
                 const letterSpan = el.querySelector('.letters');
                 if (letterSpan) letterSpan.textContent = '';
@@ -30,9 +31,16 @@ function setupDetailsTyping() {
         if (p.querySelector('.description-ghost')) return; 
 
         const currentHTML = p.innerHTML.trim();
+        
+        // MOBILE BYPASS: If mobile, skip the container setup and the observer
+        if (isMobile) {
+            p.innerHTML = currentHTML;
+            return; 
+        }
+
         p.dataset.fullHTML = currentHTML;
         
-        // Using a more performance-friendly grid setup
+        // DESKTOP: Use the grid setup for typing
         p.innerHTML = `
             <div class="description-type-container" style="display: grid; grid-template-columns: 1fr;">
                 <span class="description-ghost" style="grid-area: 1/1; visibility: hidden;">${currentHTML}</span>
@@ -44,12 +52,12 @@ function setupDetailsTyping() {
 }
 
 function startDetailsLoop(el, duration) {
+    // This loop only runs on Desktop because of the check in setupDetailsTyping
     el.dataset.isTyping = "true";
     const fullHTML = el.dataset.fullHTML;
     const letterSpan = el.querySelector('.letters');
     const typingWrapper = el.querySelector('.description-typing');
     
-    // Tokenize HTML tags vs characters
     const tokens = fullHTML.match(/(<[^>]+>|[^<])/g) || [];
     const speed = duration / tokens.length;
     
@@ -63,7 +71,6 @@ function startDetailsLoop(el, duration) {
 
         if (currentTime - lastTime >= speed) {
             if (tokenIndex < tokens.length) {
-                // Optimized: build the string incrementally
                 let currentOutput = "";
                 for(let j = 0; j <= tokenIndex; j++) {
                     currentOutput += tokens[j];

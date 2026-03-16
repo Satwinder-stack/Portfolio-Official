@@ -31,6 +31,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const { selectProject } = initCarousel(previews, detailsPanels, thumbnails, carousel);
     const { activateTech } = initTechFilter(languages, leftArrow, rightArrow, projectCards, selectProject);
 
+        /**
+     * MOBILE VIDEO CONTROLLER
+     * Ensures videos are paused by default and togglable on mobile.
+     */
+    function initMobileVideoControls() {
+        const isMobile = window.innerWidth <= 768;
+        const videos = document.querySelectorAll('.preview-media');
+
+        videos.forEach(video => {
+            if (isMobile) {
+                // FORCE: Remove autoplay and pause immediately
+                video.removeAttribute('autoplay');
+                video.pause();
+                video.currentTime = 0; // Reset to start frame
+
+                const link = video.closest('.video-link');
+                if (link) {
+                    // One-time listener to handle the "First Tap"
+                    link.addEventListener('click', function handleFirstTap(e) {
+                        if (video.paused) {
+                            e.preventDefault();
+                            // Pause all others
+                            videos.forEach(v => v.pause());
+                            
+                            // Play this one
+                            video.play();
+                            
+                            // Optional: Remove the preventDefault after first play 
+                            // so the next click goes to the project page
+                            // link.removeEventListener('click', handleFirstTap);
+                        }
+                    });
+                }
+            } else {
+                // Desktop: Autoplay only the active one
+                if (video.classList.contains('active')) {
+                    video.play().catch(() => {});
+                }
+            }
+        });
+    }
+
+    initMobileVideoControls();
+       
     // Initial project selection
     if (thumbnails.length > 0) {
         selectProject(0); 
