@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Blog | Satwinder Jeerh</title>
+    <meta name="description" content="Essays by Satwinder Jeerh on development, design, and how AI is changing the way we build and learn.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Blog | Satwinder Jeerh">
+    <meta property="og:description" content="Essays by Satwinder Jeerh on development, design, and how AI is changing the way we build and learn.">
+    <link rel="canonical" href="https://satwinder-stack.github.io/Portfolio-Official/pages/blog.html">
+    <meta name="author" content="Satwinder Jeerh">
+    <meta name="theme-color" content="#0f0c29">
+    <meta property="og:url" content="https://satwinder-stack.github.io/Portfolio-Official/pages/blog.html">
+    <meta property="og:site_name" content="Satwinder Jeerh">
+    <meta property="og:image" content="https://satwinder-stack.github.io/Portfolio-Official/images/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Satwinder Jeerh, Full-Stack Developer portfolio">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blog | Satwinder Jeerh">
+    <meta name="twitter:description" content="Essays by Satwinder Jeerh on development, design, and how AI is changing the way we build and learn.">
+    <meta name="twitter:image" content="https://satwinder-stack.github.io/Portfolio-Official/images/og-image.jpg">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+    <script src="../javascript/theme-init.js"></script>
+
+    <link rel="preload" href="../fonts/tektur-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+    <link rel="stylesheet" href="../css/loading_screen.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/header.css">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link rel="stylesheet" href="../css/footer.css">
+</head>
+<body>
+
+<script src="../javascript/layout.js"></script>
+
+<main class="blog-page">
+    <section class="blog-hero">
+        <h1>JOURNAL</h1>
+        <p class="intro">Insights on development, design, career shifts, and AI's influence on how we work and learn.</p>
+        <p class="jr-summary">4 posts · 27 min of reading</p>
+    </section>
+
+    <section class="jr-tools" aria-label="Find a post">
+        <label class="jr-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <span class="visually-hidden">Search posts</span>
+            <input type="search" id="jr-query" placeholder="Search posts" autocomplete="off">
+        </label>
+        <div class="jr-topics" role="group" aria-label="Filter by topic">
+            <button type="button" class="jr-chip is-active" data-topic="all" aria-pressed="true">All <span class="jr-count">4</span></button>
+            <button type="button" class="jr-chip" data-topic="development" aria-pressed="false">Development <span class="jr-count">1</span></button>
+            <button type="button" class="jr-chip" data-topic="philosophy" aria-pressed="false">Philosophy <span class="jr-count">1</span></button>
+            <button type="button" class="jr-chip" data-topic="future" aria-pressed="false">Future <span class="jr-count">1</span></button>
+            <button type="button" class="jr-chip" data-topic="speculative" aria-pressed="false">Speculative <span class="jr-count">1</span></button>
+        </div>
+        <p class="jr-status" aria-live="polite"></p>
+    </section>
+
+    <section class="blog-container">
+        <div class="blog-grid">
+            <article class="blog-card" data-slug="ai-vs-traditional" data-topic="development" data-minutes="6">
+                <div class="card-img-wrapper">
+                    <img loading="lazy" decoding="async" src="../images/blogs/ai assisted.webp" alt="Cybersecurity and code">
+                    <div class="category-tag">Development</div>
+                    <div class="jr-progress" hidden><span></span></div>
+                </div>
+                <div class="card-meta">
+                    <span class="date">Feb 24, 2026</span> <span class="read-time">&middot; 6 min read</span> <span class="jr-read" hidden></span>
+                </div>
+                <h2>AI Assisted vs. Traditional Programming</h2>
+                <p>Exploring the transition from manual syntax construction to intent-based orchestration in modern dev workflows...</p>
+                <a href="blogs/ai-vs-traditional.html" class="read-link">READ POST</a>
+            </article>
+
+            <article class="blog-card" data-slug="ai-tool-or-human" data-topic="philosophy" data-minutes="6">
+                <div class="card-img-wrapper">
+                    <img loading="lazy" decoding="async" src="../images/blogs/ai as a tool or human as a tool.webp" alt="AI concept">
+                    <div class="category-tag">Philosophy</div>
+                    <div class="jr-progress" hidden><span></span></div>
+                </div>
+                <div class="card-meta">
+                    <span class="date">Feb 24, 2026</span> <span class="read-time">&middot; 6 min read</span> <span class="jr-read" hidden></span>
+                </div>
+                <h2>AI as a Tool or Human as the Tool?</h2>
+                <p>Are we directing the AI, or are we simply becoming quality controllers? Defining the line between architect and assistant...</p>
+                <a href="blogs/ai-tool-or-human.html" class="read-link">READ POST</a>
+            </article>
+
+            <article class="blog-card" data-slug="human-dependency" data-topic="future" data-minutes="7">
+                <div class="card-img-wrapper">
+                    <img loading="lazy" decoding="async" src="../images/blogs/human dependency.webp" alt="human hand and robotic hand">
+                    <div class="category-tag">Future</div>
+                    <div class="jr-progress" hidden><span></span></div>
+                </div>
+                <div class="card-meta">
+                    <span class="date">Feb 24, 2026</span> <span class="read-time">&middot; 7 min read</span> <span class="jr-read" hidden></span>
+                </div>
+                <h2>The Invisible Tether: Human Dependency</h2>
+                <p>How the "safety net" of AI is becoming the "floor" for all careers, and the risk of cognitive skill-fade in 2026...</p>
+                <a href="blogs/human-dependency.html" class="read-link">READ POST</a>
+            </article>
+
+            <article class="blog-card" data-slug="ai-stagnation" data-topic="speculative" data-minutes="8">
+                <div class="card-img-wrapper">
+                    <img loading="lazy" decoding="async" src="../images/blogs/glitchy digital face.webp" alt="Digital glitch">
+                    <div class="category-tag">Speculative</div>
+                    <div class="jr-progress" hidden><span></span></div>
+                </div>
+                <div class="card-meta">
+                    <span class="date">Feb 24, 2026</span> <span class="read-time">&middot; 8 min read</span> <span class="jr-read" hidden></span>
+                </div>
+                <h2>Peak AI: Advancement vs. Stagnation</h2>
+                <p>Analyzing Model Collapse: What happens when AI begins to consume its own data and removes the human edge?</p>
+                <a href="blogs/ai-stagnation.html" class="read-link">READ POST</a>
+            </article>
+        </div>
+        <div class="jr-empty" hidden>
+            <p>No posts match that search.</p>
+            <button type="button" class="jr-reset">Clear filters</button>
+        </div>
+    </section>
+</main>
+
+
+<script>SiteLayout.footer();</script>
+<script src="../javascript/i18n.js"></script>
+
+<script src="../javascript/navigation.js" defer></script>
+<script src="../javascript/enhance.js" defer></script>
+<script src="../javascript/loading_screen.js" defer></script>
+<script src="../javascript/blogs/journal.js" defer></script>
+</body>
+</html>

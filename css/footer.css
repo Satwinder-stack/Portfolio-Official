@@ -1,0 +1,346 @@
+/* Site footer (markup in javascript/layout.js, shared by every page).
+   Stays dark in both themes. Properties that page stylesheets set on generic
+   elements (h2, a, p, ul) are reset here so the footer looks the same everywhere. */
+.site-footer {
+  --ft-bg: #0a0d18;
+  --ft-text: #e6edf7;
+  --ft-dim: #a3adbf;
+  --ft-line: rgba(148, 163, 184, 0.16);
+  --ft-accent: #67d4ff;
+  position: relative;
+  padding: clamp(2.8rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 2.5rem) 0;
+  background: var(--ft-bg);
+  color: var(--ft-text);
+  /* System UI font for body text: identical on every page without an extra download */
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  text-align: left;
+}
+.site-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #00d4ff 30%, #a78bfa 70%, transparent);
+  opacity: 0.6;
+}
+.site-footer p,
+.site-footer ul,
+.site-footer h2 {
+  margin: 0;
+  padding: 0;
+}
+.site-footer a {
+  color: inherit;
+  text-decoration: none;
+}
+.ft-wrap {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(0, 2.1fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Brand column */
+.ft-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+.ft-name {
+  display: inline-block;
+  padding: 0.55rem 0;
+  font-family: Tektur, sans-serif;
+  font-size: clamp(1.35rem, 2.2vw, 1.6rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+}
+.ft-name span {
+  background: linear-gradient(90deg, #00d4ff, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.ft-role {
+  font-size: 0.92rem;
+  color: var(--ft-dim);
+}
+.ft-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--ft-line);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--ft-text);
+}
+.ft-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+.ft-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+.site-footer .ft-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #ffffff;
+  font-family: Tektur, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.site-footer .ft-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.35);
+}
+.ft-social {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--ft-line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color 0.25s, background-color 0.25s, transform 0.25s;
+}
+.ft-social img {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+}
+.ft-social:hover {
+  border-color: var(--ft-accent);
+  background: rgba(103, 212, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Link columns */
+.ft-nav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 2rem 1.5rem;
+}
+.site-footer .ft-heading {
+  margin-bottom: 0.9rem;
+  background: none;
+  color: var(--ft-text);
+  -webkit-text-fill-color: currentColor;
+  font-family: Tektur, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  text-align: left;
+  text-transform: uppercase;
+}
+.site-footer .ft-heading::before,
+.site-footer .ft-heading::after {
+  content: none;
+  display: none;
+}
+.ft-group ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  list-style: none;
+}
+.ft-group a {
+  display: inline-block;
+  padding: 0.3rem 0;
+  color: var(--ft-dim);
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+.ft-group a:hover {
+  color: var(--ft-accent);
+}
+.site-footer a:focus-visible {
+  outline: 2px solid var(--ft-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Bottom bar */
+.ft-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem 1.5rem;
+  max-width: 1200px;
+  margin: clamp(2.2rem, 5vw, 3.5rem) auto 0;
+  padding: 1.25rem 0 1.5rem;
+  border-top: 1px solid var(--ft-line);
+  font-size: 0.82rem;
+  color: var(--ft-dim);
+}
+.ft-built {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.ft-badges {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 0.3rem;
+}
+.ft-badges img {
+  width: 16px;
+  height: 16px;
+  padding: 2px;
+  border-radius: 4px;
+  box-sizing: content-box;
+}
+.ft-badges img:nth-child(1) {
+  background: #e34c26;
+}
+.ft-badges img:nth-child(2) {
+  background: #1572b6;
+}
+.ft-badges img:nth-child(3) {
+  background: #f0db4f;
+}
+
+/* Tablets: brand across the top, links in five columns below */
+@media (max-width: 1024px) {
+  .ft-wrap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Phones: two link columns, stacked bottom bar */
+@media (max-width: 640px) {
+  .ft-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.8rem 1rem;
+  }
+  .ft-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Leave room for the floating back-to-top button (and the section bar on pages that
+   have one) so neither covers the bottom bar once the page is scrolled to the end */
+@media (max-width: 1365px) {
+  .ft-bottom {
+    padding-bottom: 5rem;
+  }
+}
+@media (max-width: 1279px) {
+  body:has(#mobile-bottom-nav) .ft-bottom {
+    padding-bottom: 6.5rem;
+  }
+}
+
+@media print {
+  .site-footer {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-footer .ft-cta,
+  .ft-social {
+    transition: none;
+  }
+}
+
+/* Pages with the floating section rail: keep the footer content clear of it */
+@media (min-width: 1280px) {
+  body:has(#draggable-sidebar) .site-footer {
+    padding-left: 100px;
+    padding-right: 100px;
+  }
+}
+@media (min-width: 1600px) {
+  body:has(#draggable-sidebar) .site-footer {
+    padding-left: 248px;
+    padding-right: 248px;
+  }
+}
+
+/* Availability badge: soft green tint, readable text, room around the dot */
+.site-footer .ft-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.95rem 0.45rem 0.8rem;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.1);
+  color: #d1fadf;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+.site-footer .ft-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2), 0 0 10px rgba(74, 222, 128, 0.6);
+}
+@media (max-width: 380px) {
+  .site-footer .ft-status {
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem 0.4rem 0.65rem;
+    font-size: 0.78rem;
+  }
+}
+
+/* Light theme: the footer follows the theme (light surface, dark text) */
+body.light-theme .site-footer {
+  --ft-bg: #f1f5f9;
+  --ft-text: #0f172a;
+  --ft-dim: #475569;
+  --ft-line: rgba(15, 23, 42, 0.12);
+  --ft-accent: #0369a1;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+body.light-theme .ft-social {
+  background: #ffffff;
+}
+body.light-theme .ft-social img {
+  filter: brightness(0);
+  opacity: 0.75;
+}
+body.light-theme .ft-social:hover {
+  background: rgba(3, 105, 161, 0.06);
+}
+body.light-theme .ft-name span {
+  background: linear-gradient(90deg, #0369a1, #6d28d9);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+body.light-theme .site-footer .ft-status {
+  border-color: rgba(22, 163, 74, 0.35);
+  background: rgba(22, 163, 74, 0.08);
+  color: #166534;
+}
+body.light-theme .site-footer .ft-dot {
+  background: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.18);
+}

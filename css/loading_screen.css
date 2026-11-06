@@ -1,0 +1,40 @@
+/* Quick fade-out when navigating to another page (see loading_screen.js) */
+body.page-leaving {
+  opacity: 0 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+/* Slim progress bar while the next page loads */
+.nav-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, #00d4ff, #a78bfa);
+  box-shadow: 0 0 10px #00d4ff;
+  z-index: 100003;
+  transition: transform 0.9s cubic-bezier(0.1, 0.6, 0.2, 1);
+}
+.nav-progress.is-running {
+  transform: scaleX(0.85);
+}
+
+/* Pages ease in on arrival */
+body {
+  animation: page-in 0.35s ease-out backwards;
+}
+/* Starts at 1% rather than 0: content painted fully transparent is ignored by the
+   browser's "largest paint" timing, which would hide text-led pages from it */
+@keyframes page-in {
+  from {
+    opacity: 0.01;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+  }
+}
